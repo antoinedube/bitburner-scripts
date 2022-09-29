@@ -1,45 +1,111 @@
-/** @param {NS} ns */
-export async function main(ns) {
+function scan_for_full_server_list(ns, root) {
 	let servers_to_scan = ['home'];
-	let hacked_servers = [];
-
-	let counter = 0;
+	let server_list = [];
 
 	while (servers_to_scan.length>0) {
 		const server = servers_to_scan.pop();
-
-		hacked_servers.push(server);
 		const neighbors = ns.scan(server);
 
-		ns.print('on server: ' + server);
-		ns.print('\tneighbors:\n' + JSON.stringify(neighbors));
-
 		for (const neighbor of neighbors) {
-			if (!hacked_servers.includes(neighbor)) {
-				ns.print('Copying script to ' + neighbor);
-				ns.scp(['hack-server.js', 'grow-server.js', 'weaken-server.js'], neighbor);
-			}
-			
-			ns.print('Hacking ' + neighbor + ' from ' + server);
-			ns.exec('hack-server.js', server, 1, neighbor);
-			
-			ns.print('Growing ' + neighbor + ' from ' + server);
-			ns.exec('grow-server.js', server, 1, neighbor);
-			
-			ns.print('Weakening ' + neighbor + ' from ' + server);
-			ns.exec('weaken-server.js', server, 1, neighbor);
-			
-			
-			if (!servers_to_scan.includes(neighbor) && !hacked_servers.includes(neighbor)) {
+			if (neighbor!='home' && !server_list.includes(neighbor)) {
 				servers_to_scan.push(neighbor);
+				server_list.push(neighbor);
 			}
 		}
+	}
 
-		if (counter>=100) {
-			ns.print('Counter is at ' + counter);
+	ns.print('Server list: ' + server_list);
+
+	return server_list;
+}
+
+function buildHackingProgramList(ns) {
+    return [
+        {name: 'brute-ssh', functionName: ns.brutessh, executableName: "BruteSSH.exe"},
+        {name: 'ftp-crack', functionName: ns.ftpcrack, executableName: "FTPCrack.exe"},
+        {name: 'relay-smtp', functionName: ns.relaysmtp, executableName: "relaySMTP.exe"},
+        {name: 'http-worm', functionName: ns.httpworm, executableName: "HTTPWorm.exe"},
+        {name: 'sql-inject', functionName: ns.sqlinject, executableName: "SQLInject.exe"}
+    ];
+}
+
+function countAvailablePrograms(ns, hackingPrograms) {
+    var count = 0;
+
+    for (const program of hackingPrograms) {
+        if (ns.fileExists(program.executableName, "home")) {
+            ns.print(program.executableName + ' is available');
+            count++;
+        }        
+    }
+
+    ns.print("There are " + count + " existing programs");
+
+    return count;
+}
+
+async function openPorts(ns, hackingPrograms, target) {
+    for (const program of hackingPrograms) {
+        if (ns.fileExists(program.executableName, "home")) {
+            await program.functionName(target);
+        }        
+    }
+}
+
+function launchScript(ns, scripts, server) {
+	for (const script of scripts) {
+		ns.print('script: ' + script + ' on server ' + server);
+
+		const availableRam = ns.getServerMaxRam(server) - ns.getServerUsedRam(server);
+		ns.print('Available ram: ' + availableRam);
+		
+		if (availableRam < 2) {
 			break;
 		}
 
-		counter++;
+		const scriptNumThreads = (availableRam / 6) <= 1 ? 1 : (availableRam / 6);  // Approx 2Gb per script and 3 scripts
+		ns.print('Script num threads: ' + scriptNumThreads);
+		ns.exec(script, server, scriptNumThreads);
+	}
+}
+
+/** @param {NS} ns */
+export async function main(ns) {
+	let server_list = scan_for_full_server_list(ns, 'home');
+
+	while (server_list.length>0) {
+		ns.print('server list:\n' + server_list);
+
+		const playerHackingLevel = ns.getHackingLevel();
+		const hackingPrograms = buildHackingProgramList(ns);
+        const currentNumberOfPorts = countAvailablePrograms(ns, hackingPrograms);
+
+		let new_server_list = [];
+		for (const server of server_list) {			
+			ns.print('Current server: ' + server);
+			
+			// Check server level vs our level
+        	var machineHackingLevel = ns.getServerRequiredHackingLevel(server);
+        	ns.print('Level player, level machine: ' + playerHackingLevel + ', ' + machineHackingLevel);
+			
+			// Check number of ports required vs number of programs available
+			var requiredNumberOfPorts = ns.getServerNumPortsRequired(server);
+        	ns.print('Required num ports, current num ports: ' + requiredNumberOfPorts + ', ' + currentNumberOfPorts);
+
+	        if (playerHackingLevel>=machineHackingLevel && currentNumberOfPorts>=requiredNumberOfPorts) {
+				
+				await openPorts(ns, hackingPrograms, server);
+				ns.nuke(server);
+				await ns.scp(['hack-server.js', 'grow-server.js', 'weaken-server.js'], server, 'home');
+				
+				launchScript(ns, ['hack-server.js', 'grow-server.js', 'weaken-server.js'], server);
+			} else {
+				new_server_list.push(server);
+			}
+		}
+
+		server_list = new_server_list;
+
+		await ns.sleep(1000*60*5) // sleep for five minutes
 	}
 }
