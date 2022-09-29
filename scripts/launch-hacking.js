@@ -1,3 +1,5 @@
+/** @param {NS} ns */
+
 function scan_for_full_server_list(ns, root) {
     let servers_to_scan = ['home'];
     let server_list = [];
@@ -69,7 +71,6 @@ function launchScript(ns, scripts, server) {
     }
 }
 
-/** @param {NS} ns */
 export async function main(ns) {
     let server_list = scan_for_full_server_list(ns, 'home');
 
