@@ -61,7 +61,7 @@ function launchScript(ns, script, server) {
     ns.print('Available ram: ' + availableRam);
 
     const scriptNumThreads = ~~(availableRam / 2.45);  // 2.45Gb for hack-server.js
-    
+
     ns.print('Script num threads: ' + scriptNumThreads);
 
     if (scriptNumThreads>0) {

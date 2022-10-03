@@ -3,14 +3,15 @@
 export async function main(ns) {
     ns.disableLog('getServerMoneyAvailable');
     ns.disableLog('sleep');
-    
+
     const targetCount = 12;  // Start: 9, Max: 12
     const targetLevel = 200;  // Start: 50, Max: 200
-    const targetRam = 8;  // Start: 1, Max: 64
-    const targetCore = 1;  // Start: 1, Max: 6
+    const targetRam = 64;  // Start: 1, Max: 64
+    const targetCore = 16;  // Start: 1, Max: 16
 
     while (true) {
         if (ns.hacknet.numNodes() < targetCount) {
+            const cost = ns.hacknet.getPurchaseNodeCost();
             if (ns.getServerMoneyAvailable("home") >= cost) {
                 ns.hacknet.purchaseNode();
             } else {
@@ -70,6 +71,6 @@ export async function main(ns) {
             break;
         }
 
-        await ns.sleep(1000*30);
+        await ns.sleep(1000);
     }
 }
