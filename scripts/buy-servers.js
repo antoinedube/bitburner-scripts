@@ -1,61 +1,75 @@
 /** @param {NS} ns */
 
-function myMoney(ns) {
-    return ns.getServerMoneyAvailable("home");
-}
-
 export async function main(ns) {
-    const targetCount = 18;
-    const targetLevel = 100;
-    const targetRam = 32;
-    const targetCore = 8;
+    ns.disableLog('getServerMoneyAvailable');
+    ns.disableLog('sleep');
+    
+    const targetCount = 12;  // Start: 9, Max: 12
+    const targetLevel = 200;  // Start: 50, Max: 200
+    const targetRam = 8;  // Start: 1, Max: 64
+    const targetCore = 1;  // Start: 1, Max: 6
 
-    while (ns.hacknet.numNodes() < targetCount) {
-        const cost = ns.hacknet.getPurchaseNodeCost();
-        while (myMoney(ns) < cost) {
-            ns.print("Need $" + cost + " . Have $" + myMoney(ns) + " to buy new node");
-            await ns.sleep(1000*60);
+    while (true) {
+        if (ns.hacknet.numNodes() < targetCount) {
+            if (ns.getServerMoneyAvailable("home") >= cost) {
+                ns.hacknet.purchaseNode();
+            } else {
+                ns.print("Need $" + cost.toFixed(2) + ". Have $" + ns.getServerMoneyAvailable("home").toFixed(2) + " to buy new node");
+            }
         }
 
-        ns.hacknet.purchaseNode();
-    };
-
-    for (let i = 0; i < targetCount; i++) {
-        while (ns.hacknet.getNodeStats(i).level < targetLevel) {
-            const cost = ns.hacknet.getLevelUpgradeCost(i, 1);
-            while (myMoney(ns) < cost) {
-                ns.print("Need $" + cost + " . Have $" + myMoney(ns) + " to upgrade level");
-                await ns.sleep(1000*60);
+        for (let i=0; i<ns.hacknet.numNodes(); i++) {
+            if (ns.hacknet.getNodeStats(i).level < targetLevel) {
+                const cost = ns.hacknet.getLevelUpgradeCost(i, 1);
+                if (ns.getServerMoneyAvailable("home") >= cost) {
+                    ns.hacknet.upgradeLevel(i, 1);
+                } else {
+                    ns.print("Need $" + cost.toFixed(2) + ". Have $" + ns.getServerMoneyAvailable("home").toFixed(2) + " to upgrade level");
+                }
             }
-            ns.hacknet.upgradeLevel(i, 1);
-        };
-    };
+        }
 
-    ns.print("All nodes upgraded to level " + targetLevel);
-
-    for (let i = 0; i < targetCount; i++) {
-        while (ns.hacknet.getNodeStats(i).ram < targetRam) {
-            const cost = ns.hacknet.getRamUpgradeCost(i, 1);
-            while (myMoney(ns) < cost) {
-                ns.print("Need $" + cost + " . Have $" + myMoney(ns) + " to upgrade ram");
-                await ns.sleep(1000*60);
+        for (let i=0; i<ns.hacknet.numNodes(); i++) {
+            if (ns.hacknet.getNodeStats(i).ram < targetRam) {
+                const cost = ns.hacknet.getRamUpgradeCost(i, 1);
+                if (ns.getServerMoneyAvailable("home") >= cost) {
+                    ns.hacknet.upgradeRam(i, 1);
+                } else {
+                    ns.print("Need $" + cost.toFixed(2) + ". Have $" + ns.getServerMoneyAvailable("home").toFixed(2) + " to upgrade RAM");
+                }
             }
-            ns.hacknet.upgradeRam(i, 1);
-        };
-    };
+        }
 
-    ns.print("All nodes upgraded to " + targetRam + "GB RAM");
-
-    for (let i = 0; i < targetCount; i++) {
-        while (ns.hacknet.getNodeStats(i).cores < targetCore) {
-            const cost = ns.hacknet.getCoreUpgradeCost(i, 1);
-            while (myMoney(ns) < cost) {
-                ns.print("Need $" + cost + " . Have $" + myMoney(ns) + " to upgrade core");
-                await ns.sleep(1000*60);
+        for (let i=0; i<ns.hacknet.numNodes(); i++) {
+            if (ns.hacknet.getNodeStats(i).cores < targetCore) {
+                const cost = ns.hacknet.getCoreUpgradeCost(i, 1);
+                if (ns.getServerMoneyAvailable("home") >= cost) {
+                    ns.hacknet.upgradeCore(i, 1);
+                } else {
+                    ns.print("Need $" + cost.toFixed(2) + ". Have $" + ns.getServerMoneyAvailable("home").toFixed(2) + " to upgrade core");
+                }
             }
-            ns.hacknet.upgradeCore(i, 1);
-        };
-    };
+        }
 
-    ns.print("All nodes upgraded to " + targetCore + " cores");
+        let countCompletelyUpgraded = 0;
+        if (ns.hacknet.numNodes()==targetCount) {
+            for (let i=0; i<ns.hacknet.numNodes(); i++) {
+                const nodeStats = ns.hacknet.getNodeStats(i);
+
+                const allLevelUpgraded = nodeStats.level==targetLevel ? true : false;
+                const allRamUpgraded = nodeStats.ram==targetRam ? true : false;
+                const allCoreUpgraded = nodeStats.cores==targetCore ? true : false;
+
+                if (allLevelUpgraded && allRamUpgraded && allCoreUpgraded) {
+                    countCompletelyUpgraded++;
+                }
+            }
+        }
+
+        if (countCompletelyUpgraded==targetCount) {
+            break;
+        }
+
+        await ns.sleep(1000*30);
+    }
 }

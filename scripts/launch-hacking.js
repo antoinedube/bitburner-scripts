@@ -54,19 +54,17 @@ async function openPorts(ns, hackingPrograms, target) {
     }
 }
 
-function launchScript(ns, scripts, server) {
-    for (const script of scripts) {
-        ns.print('script: ' + script + ' on server ' + server);
+function launchScript(ns, script, server) {
+    ns.print('script: ' + script + ' on server ' + server);
 
-        const availableRam = ns.getServerMaxRam(server) - ns.getServerUsedRam(server);
-        ns.print('Available ram: ' + availableRam);
+    const availableRam = ns.getServerMaxRam(server) - ns.getServerUsedRam(server);
+    ns.print('Available ram: ' + availableRam);
 
-        if (availableRam < 2) {
-            break;
-        }
+    const scriptNumThreads = ~~(availableRam / 2.45);  // 2.45Gb for hack-server.js
+    
+    ns.print('Script num threads: ' + scriptNumThreads);
 
-        const scriptNumThreads = (availableRam / 6) <= 1 ? 1 : (availableRam / 6);  // Approx 2Gb per script and 3 scripts
-        ns.print('Script num threads: ' + scriptNumThreads);
+    if (scriptNumThreads>0) {
         ns.exec(script, server, scriptNumThreads);
     }
 }
@@ -94,12 +92,13 @@ export async function main(ns) {
             ns.print('Required num ports, current num ports: ' + requiredNumberOfPorts + ', ' + currentNumberOfPorts);
 
             if (playerHackingLevel>=machineHackingLevel && currentNumberOfPorts>=requiredNumberOfPorts) {
-
                 await openPorts(ns, hackingPrograms, server);
-                ns.nuke(server);
-                await ns.scp(['hack-server.js', 'grow-server.js', 'weaken-server.js'], server, 'home');
 
-                launchScript(ns, ['hack-server.js', 'grow-server.js', 'weaken-server.js'], server);
+                ns.nuke(server);
+
+                await ns.scp('hack-server.js', server, 'home');
+
+                launchScript(ns, 'hack-server.js', server);
             } else {
                 new_server_list.push(server);
             }
