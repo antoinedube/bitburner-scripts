@@ -70,41 +70,46 @@ function launchScript(ns, script, server) {
 }
 
 export async function main(ns) {
-    let server_list = scan_for_full_server_list(ns, 'home');
 
-    while (server_list.length>0) {
+    while (true) {
+        let server_list = scan_for_full_server_list(ns, 'home');
+
         ns.print('server list:\n' + server_list);
 
         const playerHackingLevel = ns.getHackingLevel();
         const hackingPrograms = buildHackingProgramList(ns);
         const currentNumberOfPorts = countAvailablePrograms(ns, hackingPrograms);
 
-        let new_server_list = [];
         for (const server of server_list) {
             ns.print('Current server: ' + server);
 
             // Check server level vs our level
             var machineHackingLevel = ns.getServerRequiredHackingLevel(server);
             ns.print('Level player, level machine: ' + playerHackingLevel + ', ' + machineHackingLevel);
+            if (playerHackingLevel<machineHackingLevel) {
+                continue;
+            }
 
             // Check number of ports required vs number of programs available
             var requiredNumberOfPorts = ns.getServerNumPortsRequired(server);
             ns.print('Required num ports, current num ports: ' + requiredNumberOfPorts + ', ' + currentNumberOfPorts);
+            if (currentNumberOfPorts<requiredNumberOfPorts) {
+                continue;
+            }
 
-            if (playerHackingLevel>=machineHackingLevel && currentNumberOfPorts>=requiredNumberOfPorts) {
+            if (!ns.hasRootAccess(server)) {
                 await openPorts(ns, hackingPrograms, server);
+                await ns.nuke(server);
+            }
 
-                ns.nuke(server);
-
+            if (!ns.fileExists('hack-server.js', server)) {
                 await ns.scp('hack-server.js', server, 'home');
+            }
 
+            if (!ns.isRunning('hack-server.js', server)) {
                 launchScript(ns, 'hack-server.js', server);
-            } else {
-                new_server_list.push(server);
             }
         }
-
-        server_list = new_server_list;
 
         await ns.sleep(1000*60*5) // sleep for five minutes
     }

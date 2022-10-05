@@ -1,7 +1,7 @@
 /** @param {NS} ns */
 
 function computeTarget(a, b) {
-    const expon = 25;  // User-defined value, higher value: target is closer to a.
+    const expon = 20;  // User-defined value, higher value: target is closer to a.
     const firstTerm = Math.pow(a, expon);
     const secondTerm = b;
     return Math.pow(firstTerm*secondTerm, 1.0/(expon+1));
