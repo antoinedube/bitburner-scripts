@@ -36,7 +36,7 @@ export async function main(ns) {
             await ns.grow(target);
         }
 
-        for (let i=0; i<50; i++) {
+        for (let i=0; i<25; i++) {
             await ns.hack(target);
         }
     }

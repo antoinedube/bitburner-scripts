@@ -1,7 +1,7 @@
 /** @param {NS} ns */
 
 function scan_for_full_server_list(ns, root) {
-    let servers_to_scan = ['home'];
+    let servers_to_scan = [root];
     let server_list = [];
 
     while (servers_to_scan.length>0) {
