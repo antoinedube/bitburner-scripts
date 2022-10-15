@@ -70,6 +70,7 @@ function launchScript(ns, script, server) {
 }
 
 export async function main(ns) {
+    const replace = false;  // Replace an existing script
 
     while (true) {
         let server_list = scan_for_full_server_list(ns, 'home');
@@ -102,8 +103,13 @@ export async function main(ns) {
                 await ns.nuke(server);
             }
 
-            if (!ns.fileExists('hack-server.js', server)) {
-                await ns.scp('hack-server.js', server, 'home');
+            if (replace) {
+                ns.killall(server);
+                
+                const scpStatus = await ns.scp('hack-server.js', server, 'home');
+                if (!scpStatus) {
+                    ns.print('Failed to copy hack-server.js on ' + server);
+                }
             }
 
             if (!ns.isRunning('hack-server.js', server)) {
