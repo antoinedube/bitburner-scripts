@@ -24,14 +24,14 @@ function scan_for_full_server_list(ns, root) {
 export async function main(ns) {
     const server_list = scan_for_full_server_list(ns, 'home');
 
-	for (const server of server_list) {
-		if (!ns.fileExists('weaken-remote.js', server)) {
-			const scpStatus = await ns.scp('weaken-remote.js', server, 'home');
-			if (!scpStatus) {
-				ns.print('Failed to copy weaken-remote.js on ' + server);
-			}
-		}
+    for (const server of server_list) {
+        if (!ns.fileExists('weaken-remote.js', server)) {
+            const scpStatus = await ns.scp('weaken-remote.js', server, 'home');
+            if (!scpStatus) {
+                ns.print('Failed to copy weaken-remote.js on ' + server);
+            }
+        }
 
         ns.exec('weaken-remote.js', server, 1024);
-	}
+    }
 }

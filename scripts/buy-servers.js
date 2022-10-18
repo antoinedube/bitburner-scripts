@@ -7,6 +7,6 @@ export async function main(ns) {
     ns.tprint("Limit of servers: " + limit);
     ns.tprint("Server ram: " + serverRam);
     ns.tprint("Server cost: " + serverCost);
-    
+
     ns.purchaseServer('neighbor', serverRam);
 }
