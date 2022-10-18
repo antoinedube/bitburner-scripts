@@ -9,7 +9,7 @@ function scan_for_full_server_list(ns, root) {
         const neighbors = ns.scan(server);
 
         for (const neighbor of neighbors) {
-            if (neighbor!='home' && !server_list.includes(neighbor)) {
+            if (neighbor!='home' && !neighbor.startsWith('neighbor-') && !server_list.includes(neighbor)) {
                 servers_to_scan.push(neighbor);
                 server_list.push(neighbor);
             }
@@ -75,8 +75,6 @@ export async function main(ns) {
     while (true) {
         let server_list = scan_for_full_server_list(ns, 'home');
 
-        ns.print('server list:\n' + server_list);
-
         const playerHackingLevel = ns.getHackingLevel();
         const hackingPrograms = buildHackingProgramList(ns);
         const currentNumberOfPorts = countAvailablePrograms(ns, hackingPrograms);
@@ -105,7 +103,9 @@ export async function main(ns) {
 
             if (replace) {
                 ns.killall(server);
-                
+            }
+
+            if (replace || !ns.fileExists('hack-server.js', server)) {
                 const scpStatus = await ns.scp('hack-server.js', server, 'home');
                 if (!scpStatus) {
                     ns.print('Failed to copy hack-server.js on ' + server);
@@ -115,6 +115,10 @@ export async function main(ns) {
             if (!ns.isRunning('hack-server.js', server)) {
                 launchScript(ns, 'hack-server.js', server);
             }
+        }
+
+        if (replace) {
+            break;
         }
 
         await ns.sleep(1000*60*5) // sleep for five minutes
