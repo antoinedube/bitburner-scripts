@@ -11,8 +11,8 @@ export async function main(ns) {
     ns.disableLog('getServerMinSecurityLevel');
     ns.disableLog('getServerMoneyAvailable');
     ns.disableLog('getServerMaxMoney');
-    const decimalPlaces = 10;
-    let expon_a = 100;
+    const decimalPlaces = 3;
+    let expon_a = 10;
     let expon_b = 1;
 
     const target = ns.getHostname();
@@ -42,7 +42,7 @@ export async function main(ns) {
 
         if (expon_a>1) {
             expon_a -= 1;
-        } else if (expon_a==1 && expon_b<100) {
+        } else if (expon_a==1 && expon_b<10) {
             expon_b += 1;
         }
 
