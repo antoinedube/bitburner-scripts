@@ -4,7 +4,7 @@ export async function main(ns) {
     ns.disableLog('getServerMoneyAvailable');
     ns.disableLog('sleep');
 
-    const targetCount = 27;  // Start: 9, Max: 24
+    const targetCount = 21;  // Start: 9, Max: 24
     const targetLevel = 200;  // Start: 50, Max: 200
     const targetRam = 64;  // Start: 1, Max: 64
     const targetCore = 16;  // Start: 1, Max: 16
@@ -30,6 +30,7 @@ export async function main(ns) {
             }
         }
 
+        /*
         for (let i=0; i<ns.hacknet.numNodes(); i++) {
             if (ns.hacknet.getNodeStats(i).ram < targetRam) {
                 const cost = ns.hacknet.getRamUpgradeCost(i, 1);
@@ -51,6 +52,7 @@ export async function main(ns) {
                 }
             }
         }
+        */
 
         let countCompletelyUpgraded = 0;
         if (ns.hacknet.numNodes()==targetCount) {
@@ -58,10 +60,10 @@ export async function main(ns) {
                 const nodeStats = ns.hacknet.getNodeStats(i);
 
                 const allLevelUpgraded = nodeStats.level==targetLevel ? true : false;
-                const allRamUpgraded = nodeStats.ram==targetRam ? true : false;
-                const allCoreUpgraded = nodeStats.cores==targetCore ? true : false;
+                // const allRamUpgraded = nodeStats.ram==targetRam ? true : false;
+                // const allCoreUpgraded = nodeStats.cores==targetCore ? true : false;
 
-                if (allLevelUpgraded && allRamUpgraded && allCoreUpgraded) {
+                if (allLevelUpgraded /*&& allRamUpgraded && allCoreUpgraded*/) {
                     countCompletelyUpgraded++;
                 }
             }
@@ -71,6 +73,6 @@ export async function main(ns) {
             break;
         }
 
-        await ns.sleep(1000);
+        await ns.sleep(500);
     }
 }

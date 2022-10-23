@@ -38,7 +38,9 @@ export async function main(ns) {
             await ns.grow(target);
         }
 
-        await ns.hack(target);
+        for (let i=0; i<10; i++) {
+            await ns.hack(target);
+        }
 
         if (expon_a>1) {
             expon_a -= 1;
