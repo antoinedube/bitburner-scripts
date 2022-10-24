@@ -2,7 +2,7 @@
 
 export async function main(ns) {
     const limit = ns.getPurchasedServerLimit();
-    const serverRam = 256;  // Max: 1048576
+    const serverRam = 1048576;  // Max: 1048576
     const serverCost = ns.getPurchasedServerCost(serverRam);
     ns.tprint("Limit of servers: " + limit);
     ns.tprint("Server ram: " + serverRam);
