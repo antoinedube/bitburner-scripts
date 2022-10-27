@@ -25,7 +25,7 @@ async function launch_script(ns, scriptName, server) {
     if (!ns.fileExists(scriptName, server)) {
         const scpStatus = await ns.scp(scriptName, server, 'home');
         if (!scpStatus) {
-            ns.tprint('Failed to copy ' + scriptName + ' on ' + server);
+            ns.print('Failed to copy ' + scriptName + ' on ' + server);
         }
     }
     
@@ -47,19 +47,19 @@ export async function main(ns) {
     var serverNameRegex = /neighbor-([0-9]*)/;
 
 	for (const server of server_list) {
-        ns.tprint('Server: ' + server);
+        ns.print('Server: ' + server);
         var matchResults = serverNameRegex.exec(server);
         if (matchResults == null) {
             continue;
         }
         const serverIndex = matchResults[1];
-        ns.tprint('Server index: ' + matchResults[1]);
+        ns.print('Server index: ' + matchResults[1]);
 
         if (serverIndex%2==0) {
-            ns.tprint('Even');
+            ns.print('Even');
             await launch_script(ns, 'grow-remote.js', server);
         } else {
-            ns.tprint('Odd');
+            ns.print('Odd');
             await launch_script(ns, 'weaken-remote.js', server);
         }
 	}
