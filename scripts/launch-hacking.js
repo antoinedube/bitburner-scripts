@@ -1,50 +1,7 @@
 /** @param {NS} ns */
 
-function scan_for_full_server_list(ns, root) {
-    let servers_to_scan = [root];
-    let server_list = [];
-
-    while (servers_to_scan.length>0) {
-        const server = servers_to_scan.pop();
-        const neighbors = ns.scan(server);
-
-        for (const neighbor of neighbors) {
-            if (neighbor!='home' && !neighbor.startsWith('neighbor-') && !server_list.includes(neighbor)) {
-                servers_to_scan.push(neighbor);
-                server_list.push(neighbor);
-            }
-        }
-    }
-
-    ns.print('Server list: ' + server_list);
-
-    return server_list;
-}
-
-function buildHackingProgramList(ns) {
-    return [
-        {name: 'brute-ssh', functionName: ns.brutessh, executableName: "BruteSSH.exe"},
-        {name: 'ftp-crack', functionName: ns.ftpcrack, executableName: "FTPCrack.exe"},
-        {name: 'relay-smtp', functionName: ns.relaysmtp, executableName: "relaySMTP.exe"},
-        {name: 'http-worm', functionName: ns.httpworm, executableName: "HTTPWorm.exe"},
-        {name: 'sql-inject', functionName: ns.sqlinject, executableName: "SQLInject.exe"}
-    ];
-}
-
-function countAvailablePrograms(ns, hackingPrograms) {
-    var count = 0;
-
-    for (const program of hackingPrograms) {
-        if (ns.fileExists(program.executableName, "home")) {
-            ns.print(program.executableName + ' is available');
-            count++;
-        }
-    }
-
-    ns.print("There are " + count + " existing programs");
-
-    return count;
-}
+import {scan} from "./scan.js";
+import {buildHackingProgramList, countAvailablePrograms} from "./hacking-programs.js";
 
 async function openPorts(ns, hackingPrograms, target) {
     for (const program of hackingPrograms) {
@@ -57,10 +14,11 @@ async function openPorts(ns, hackingPrograms, target) {
 function launchScript(ns, script, server) {
     ns.print('script: ' + script + ' on server ' + server);
 
+    const scriptRam = ns.getScriptRam(script);
     const availableRam = ns.getServerMaxRam(server) - ns.getServerUsedRam(server);
     ns.print('Available ram: ' + availableRam);
 
-    const scriptNumThreads = ~~(availableRam / 2.45);  // 2.45Gb for hack-server.js
+    const scriptNumThreads = ~~(availableRam / scriptRam);
 
     ns.print('Script num threads: ' + scriptNumThreads);
 
@@ -73,13 +31,13 @@ export async function main(ns) {
     const replace = false;  // Replace an existing script
 
     while (true) {
-        let server_list = scan_for_full_server_list(ns, 'home');
+        let serverList = await scan(ns, 'home');
 
         const playerHackingLevel = ns.getHackingLevel();
         const hackingPrograms = buildHackingProgramList(ns);
         const currentNumberOfPorts = countAvailablePrograms(ns, hackingPrograms);
 
-        for (const server of server_list) {
+        for (const server of serverList) {
             ns.print('Current server: ' + server);
 
             // Check server level vs our level
@@ -121,6 +79,6 @@ export async function main(ns) {
             break;
         }
 
-        await ns.sleep(1000*60*5) // sleep for five minutes
+        await ns.sleep(1000*30) // sleep for 30 sec
     }
 }
