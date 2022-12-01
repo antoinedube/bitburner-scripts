@@ -5,12 +5,14 @@ export async function main(ns) {
 	}
 
 	const scripts = [
-		'buy-hacknet-nodes.js', 'buy-servers.js', 'delete-servers.js',
-		'grow-remote.js', 'hack-server.js', 'hacking-programs.js',
-		'launch-hacking.js', 'launch-on-servers.js', 'list-server-prices.js',
-		'scan.js', 'weaken-remote.js'];
+		'buy-hacknet-nodes.js', 'buy-servers.js', 'delete-servers.js', 
+		'fetch-scripts.js', 'grow-remote.js', 'hack-server.js', 
+		'hacking-programs.js', 'launch-hacking.js', 'launch-on-servers.js', 
+		'list-server-prices.js', 'scan.js', 'weaken-remote.js'
+	];
 
 	for (const scriptName of scripts) {
+		ns.tprint(`Fetching: ${scriptName}`);
 		await ns.wget(
 			`https://raw.githubusercontent.com/antoinedube/bitburner-scripts/main/scripts/${scriptName}`,
 			`${scriptName}`

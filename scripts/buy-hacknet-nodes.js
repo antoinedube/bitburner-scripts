@@ -57,9 +57,9 @@ export async function main(ns) {
             for (let i=0; i<ns.hacknet.numNodes(); i++) {
                 const nodeStats = ns.hacknet.getNodeStats(i);
 
-                const allLevelUpgraded = nodeStats.level==targetLevel ? true : false;
-                const allRamUpgraded = nodeStats.ram==targetRam ? true : false;
-                const allCoreUpgraded = nodeStats.cores==targetCore ? true : false;
+                const allLevelUpgraded = nodeStats.level==targetLevel;
+                const allRamUpgraded = nodeStats.ram==targetRam;
+                const allCoreUpgraded = nodeStats.cores==targetCore;
 
                 if (allLevelUpgraded && allRamUpgraded && allCoreUpgraded) {
                     countCompletelyUpgraded++;

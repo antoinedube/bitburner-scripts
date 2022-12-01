@@ -1,5 +1,4 @@
 /** @param {NS} ns */
-
 export async function main(ns) {
     ns.disableLog('getServerSecurityLevel');
     ns.disableLog('getServerMinSecurityLevel');
