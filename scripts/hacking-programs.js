@@ -1,5 +1,4 @@
 /** @param {NS} ns */
-
 export function buildHackingProgramList(ns) {
     return [
         {name: 'brute-ssh', functionName: ns.brutessh, executableName: "BruteSSH.exe"},
@@ -10,6 +9,7 @@ export function buildHackingProgramList(ns) {
     ];
 }
 
+/** @param {NS} ns */
 export function countAvailablePrograms(ns, hackingPrograms) {
     var count = 0;
 

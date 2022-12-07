@@ -1,16 +1,17 @@
-/** @param {NS} ns */
-
 import {scan} from "./scan.js";
 import {buildHackingProgramList, countAvailablePrograms} from "./hacking-programs.js";
 
+/** @param {NS} ns */
 async function openPorts(ns, hackingPrograms, target) {
     for (const program of hackingPrograms) {
         if (ns.fileExists(program.executableName, "home")) {
-            await program.functionName(target);
+            const executable = program['functionName'].bind(ns);
+            await executable(target);
         }
     }
 }
 
+/** @param {NS} ns */
 function launchScript(ns, script, server) {
     ns.print('script: ' + script + ' on server ' + server);
 
@@ -27,11 +28,13 @@ function launchScript(ns, script, server) {
     }
 }
 
+/** @param {NS} ns */
 export async function main(ns) {
     const replace = false;  // Replace an existing script
 
     while (true) {
-        let serverList = await scan(ns, 'home');
+        const fullServerList = await scan(ns, 'home');
+        const serverList = fullServerList.filter(name => !name.startsWith('neighbor-'));
 
         const playerHackingLevel = ns.getHackingLevel();
         const hackingPrograms = buildHackingProgramList(ns);
@@ -56,7 +59,7 @@ export async function main(ns) {
 
             if (!ns.hasRootAccess(server)) {
                 await openPorts(ns, hackingPrograms, server);
-                await ns.nuke(server);
+                ns.nuke(server);
             }
 
             if (replace) {
@@ -64,7 +67,7 @@ export async function main(ns) {
             }
 
             if (replace || !ns.fileExists('hack-server.js', server)) {
-                const scpStatus = await ns.scp('hack-server.js', server, 'home');
+                const scpStatus = ns.scp('hack-server.js', server, 'home');
                 if (!scpStatus) {
                     ns.print('Failed to copy hack-server.js on ' + server);
                 }

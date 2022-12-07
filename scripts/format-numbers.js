@@ -9,6 +9,10 @@ export async function main(ns) {
 
 /** @param {NS} ns */
 export function formatNumber(number, unit) {
+	if (Math.abs(number)<1.0e-6) {
+		return `0 ${unit}`;
+	}
+	
 	const decimals = 2;
 	const k = 1000;
     const sizes = ['', 'k', 'm', 'g', 't', 'p', 'e', 'z', 'y']

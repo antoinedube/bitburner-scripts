@@ -6,9 +6,9 @@ export async function main(ns) {
 
 	const scripts = [
 		'buy-hacknet-nodes.js', 'buy-servers.js', 'delete-servers.js', 
-		'fetch-scripts.js', 'grow-remote.js', 'hack-server.js', 
+		'fetch-scripts.js', 'format-numbers.js', 'grow-remote.js', 'hack-remote.js', 'hack-server.js', 
 		'hacking-programs.js', 'launch-hacking.js', 'launch-on-servers.js', 
-		'list-server-prices.js', 'scan.js', 'weaken-remote.js'
+		'list-server-money.js', 'list-server-prices.js', 'scan.js', 'weaken-remote.js'
 	];
 
 	for (const scriptName of scripts) {

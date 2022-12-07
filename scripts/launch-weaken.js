@@ -1,5 +1,4 @@
 /** @param {NS} ns */
-
 function scan_for_full_server_list(ns, root) {
     let servers_to_scan = [root];
     let server_list = [];
@@ -21,6 +20,7 @@ function scan_for_full_server_list(ns, root) {
     return server_list;
 }
 
+/** @param {NS} ns */
 export async function main(ns) {
     const server_list = scan_for_full_server_list(ns, 'home');
 

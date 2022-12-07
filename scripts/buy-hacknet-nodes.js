@@ -1,5 +1,4 @@
 /** @param {NS} ns */
-
 export async function main(ns) {
     ns.disableLog('getServerMoneyAvailable');
     ns.disableLog('sleep');
@@ -30,6 +29,26 @@ export async function main(ns) {
             }
         }
 
+        let countCompletelyUpgraded = 0;
+        if (ns.hacknet.numNodes()==targetCount) {
+            for (let i=0; i<ns.hacknet.numNodes(); i++) {
+                const nodeStats = ns.hacknet.getNodeStats(i);
+                const allLevelUpgraded = nodeStats.level==targetLevel;
+
+                if (allLevelUpgraded) {
+                    countCompletelyUpgraded++;
+                }
+            }
+        }
+
+        if (countCompletelyUpgraded==targetCount) {
+            break;
+        }
+
+        await ns.sleep(500);
+    }
+
+    while (true) {
         for (let i=0; i<ns.hacknet.numNodes(); i++) {
             if (ns.hacknet.getNodeStats(i).ram < targetRam) {
                 const cost = ns.hacknet.getRamUpgradeCost(i, 1);
@@ -71,6 +90,6 @@ export async function main(ns) {
             break;
         }
 
-        await ns.sleep(5000);
+        await ns.sleep(500);
     }
 }
