@@ -20,6 +20,12 @@ async function scan(ns) {
 
 /** @param {NS} ns */
 export async function main(ns) {
+    ns.disableLog('hasRootAccess');
+    ns.disableLog('getHackingLevel');
+    ns.disableLog('getServerRequiredHackingLevel');
+    ns.disableLog('getServerMoneyAvailable');
+    ns.disableLog('getServerMaxMoney');
+
     const runningScript = ns.getRunningScript();
 	const numThreads = runningScript.threads;
 
@@ -27,9 +33,21 @@ export async function main(ns) {
         const fullServerList = await scan(ns);
         const serverList = fullServerList.filter(name => !name.startsWith('neighbor-'));
         for (let server of serverList) {
-            if (ns.hasRootAccess(server)) {
+            const currentMoney = ns.getServerMoneyAvailable(server);
+            const maxMoney = ns.getServerMaxMoney(server);
+            
+            const isAccessible = ns.hasRootAccess(server) && ns.getServerRequiredHackingLevel(server)<=ns.getHackingLevel();
+            const hasMoney = currentMoney > 0.90*maxMoney;
+            
+            if (!isAccessible) {
+                continue;
+            }
+
+            if (hasMoney) {
                 await ns.hack(server, { threads: numThreads });
             }
         }
+
+        await ns.sleep(250);
     }
 }

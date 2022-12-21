@@ -1,4 +1,5 @@
-import {scan} from "./scan.js";
+import { scan } from "./scan.js";
+import { formatNumber } from "./format-numbers.js";
 
 /** @param {NS} ns */
 async function launchScript(ns, scriptName, server) {
@@ -28,7 +29,7 @@ export async function main(ns) {
 	const serverNameRegex = /neighbor-([0-9]*)/;
 	ns.print(`Target ram: ${targetRam}`);
 
-	while (targetRam<ns.getPurchasedServerMaxRam()) {
+	while (targetRam<=ns.getPurchasedServerMaxRam()) {
 		const serverList = await scan(ns);
 		const purchasedServers = serverList.filter(name => name.startsWith('neighbor-'));
 		let purchasedServersRam = purchasedServers.map(name => {
@@ -50,7 +51,7 @@ export async function main(ns) {
 		}
 
 		if (countServerWithTargetRam==ns.getPurchasedServerLimit()) {
-			targetRam*=4; // Skip a level
+			targetRam *= 4;
 		}
 
 		const newServerCost = ns.getPurchasedServerCost(targetRam);
@@ -64,16 +65,16 @@ export async function main(ns) {
 					ns.deleteServer(purchasedServer.name);
 				}
 
-				ns.print(`Buying/replacing: ${purchasedServer.name} with ${targetRam} at ${newServerCost.toFixed(2)}\$`);
+				ns.print(`Buying/replacing: ${purchasedServer.name} with ${targetRam} at ${formatNumber(newServerCost, '$')}`);
 				ns.purchaseServer(purchasedServer.name, targetRam);
 				
 				const matchResults = serverNameRegex.exec(purchasedServer.name);
 				if (matchResults == null) {
 					continue;
 				}
-				ns.print('Server index: ' + matchResults[1]);
+				
 				const serverIndex = matchResults[1];
-				if (serverIndex>23) {
+				if (serverIndex>24) {
 					await launchScript(ns, 'hack-remote.js', purchasedServer.name);
 				} else if (serverIndex%2==0) {
 					await launchScript(ns, 'grow-remote.js', purchasedServer.name);

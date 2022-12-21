@@ -9,8 +9,8 @@ export async function main(ns) {
 
 /** @param {NS} ns */
 export function formatNumber(number, unit) {
-	if (Math.abs(number)<1.0e-6) {
-		return `0 ${unit}`;
+	if (number==0) {
+		return `${number} ${unit}`;
 	}
 	
 	const decimals = 2;
