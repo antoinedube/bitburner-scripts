@@ -10,7 +10,7 @@ export async function main(ns) {
     ns.disableLog('getServerMaxMoney');
 
     const decimalPlaces = 3;
-    let a = 250;
+    let a = 10;
     let b = 1;
 
     const targetHost = ns.getHostname();
@@ -49,7 +49,7 @@ export async function main(ns) {
 
         if (a>1) {
             a--;
-        } else if (b<250) {
+        } else if (b<100) {
             b++;
         }
     }

@@ -7,9 +7,9 @@ export async function main(ns) {
 	const serverList = fullServerList.filter(name => !name.startsWith('neighbor-'));
 
 	for (let server of serverList) {
-		const moneyAvailable = ns.getServerMoneyAvailable(server);
-		const maxMoneyAvailable = ns.getServerMaxMoney(server);
+		const currentSecurityLevel = ns.getServerSecurityLevel(server);
+		const minSecurityLevel = ns.getServerMinSecurityLevel(server)
 
-		ns.tprint(`Server: ${server} --> ${formatNumber(moneyAvailable, '$')} / ${formatNumber(maxMoneyAvailable, '$')}`);
+		ns.tprint(`Server: ${server} --> ${formatNumber(currentSecurityLevel, '')} / ${formatNumber(minSecurityLevel, '')}`);
 	}
 }
