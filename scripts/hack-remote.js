@@ -19,12 +19,36 @@ async function scan(ns) {
 }
 
 /** @param {NS} ns */
+function isAccessible(ns, server) {
+    return ns.hasRootAccess(server) && ns.getServerRequiredHackingLevel(server)<=ns.getHackingLevel();
+}
+
+/** @param {NS} ns */
+function hasMoney(ns, server) {
+    const currentMoney = ns.getServerMoneyAvailable(server);
+    const maxMoney = ns.getServerMaxMoney(server);
+    const target = 0.90*maxMoney;
+
+    ns.print(`[${server}] Money -> current: ${currentMoney.toFixed(2)}, target: ${target.toFixed(2)}`);
+    return currentMoney > target;
+}
+
+/** @param {NS} ns */
+function hasSecurityLevel(ns, server) {
+    const currentLevel = ns.getServerSecurityLevel(server);
+    const minLevel = ns.getServerMinSecurityLevel(server);
+    const target = 1.10*minLevel;
+    
+    ns.print(`[${server}] Security level -> current: ${currentLevel.toFixed(2)}, target: ${target.toFixed(2)}`);
+    return currentLevel < target;
+}
+
+/** @param {NS} ns */
 export async function main(ns) {
-    ns.disableLog('hasRootAccess');
-    ns.disableLog('getHackingLevel');
-    ns.disableLog('getServerRequiredHackingLevel');
-    ns.disableLog('getServerMoneyAvailable');
-    ns.disableLog('getServerMaxMoney');
+    ns.disableLog('ALL');
+    ns.enableLog('grow');
+    ns.enableLog('hack');
+    ns.enableLog('weaken');
 
     const runningScript = ns.getRunningScript();
 	const numThreads = runningScript.threads;
@@ -32,22 +56,25 @@ export async function main(ns) {
     while (true) {
         const fullServerList = await scan(ns);
         const serverList = fullServerList.filter(name => !name.startsWith('neighbor-'));
-        for (let server of serverList) {
-            const currentMoney = ns.getServerMoneyAvailable(server);
-            const maxMoney = ns.getServerMaxMoney(server);
-            
-            const isAccessible = ns.hasRootAccess(server) && ns.getServerRequiredHackingLevel(server)<=ns.getHackingLevel();
-            const hasMoney = currentMoney > 0.90*maxMoney;
-            
-            if (!isAccessible) {
-                continue;
-            }
+        const server = serverList[Math.floor(Math.random()*serverList.length)];
 
-            if (hasMoney) {
-                await ns.hack(server, { threads: numThreads });
-            }
+        if (!isAccessible(ns, server)) {
+            continue;
         }
 
-        await ns.sleep(250);
+        if (!hasSecurityLevel(ns, server)) {
+            await ns.weaken(server, { threads: numThreads});
+            ns.print(`[${server}] Security level weakened to ${ns.getServerSecurityLevel(server).toFixed(2)}`);
+            continue;
+        }
+
+        if (!hasMoney(ns, server)) {
+            await ns.grow(server, { threads: numThreads});
+            ns.print(`[${server}] Money grown to ${ns.getServerMoneyAvailable(server).toFixed(2)}`);
+            continue;
+        }
+
+        ns.print(`[${server}] Hacking`);
+        await ns.hack(server, { threads: numThreads });
     }
 }

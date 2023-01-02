@@ -26,7 +26,6 @@ async function launchScript(ns, scriptName, server) {
 export async function main(ns) {
 	ns.disableLog('ALL');
 	let targetRam = 4;
-	const serverNameRegex = /neighbor-([0-9]*)/;
 	ns.print(`Target ram: ${targetRam}`);
 
 	while (targetRam<=ns.getPurchasedServerMaxRam()) {
@@ -52,6 +51,7 @@ export async function main(ns) {
 
 		if (countServerWithTargetRam==ns.getPurchasedServerLimit()) {
 			targetRam *= 4;
+			ns.print(`Target ram: ${targetRam}`);
 		}
 
 		const newServerCost = ns.getPurchasedServerCost(targetRam);
@@ -68,19 +68,7 @@ export async function main(ns) {
 				ns.print(`Buying/replacing: ${purchasedServer.name} with ${targetRam} at ${formatNumber(newServerCost, '$')}`);
 				ns.purchaseServer(purchasedServer.name, targetRam);
 				
-				const matchResults = serverNameRegex.exec(purchasedServer.name);
-				if (matchResults == null) {
-					continue;
-				}
-				
-				const serverIndex = matchResults[1];
-				if (serverIndex>24) {
-					await launchScript(ns, 'hack-remote.js', purchasedServer.name);
-				} else if (serverIndex%2==0) {
-					await launchScript(ns, 'grow-remote.js', purchasedServer.name);
-				} else {
-					await launchScript(ns, 'weaken-remote.js', purchasedServer.name);
-				}
+				await launchScript(ns, 'hack-remote.js', purchasedServer.name);
 			}
 		}
 		

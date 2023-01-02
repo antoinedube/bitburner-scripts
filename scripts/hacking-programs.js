@@ -10,17 +10,23 @@ export function buildHackingProgramList(ns) {
 }
 
 /** @param {NS} ns */
-export function countAvailablePrograms(ns, hackingPrograms) {
-    var count = 0;
-
+export function listAvailablePrograms(ns, hackingPrograms) {
+    let availablePrograms = [];
     for (const program of hackingPrograms) {
         if (ns.fileExists(program.executableName, "home")) {
             ns.print(program.executableName + ' is available');
-            count++;
+            availablePrograms.push(program);
         }
     }
+    return availablePrograms;
+}
 
-    ns.print("There are " + count + " existing programs");
+/** @param {NS} ns */
+export function countAvailablePrograms(ns, hackingPrograms) {
+    const availablePrograms = listAvailablePrograms(ns, hackingPrograms);
 
-    return count;
+    const numberAvailablePrograms = availablePrograms.length;
+    ns.print("There are " + numberAvailablePrograms + " existing programs");
+
+    return numberAvailablePrograms;
 }

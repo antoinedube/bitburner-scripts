@@ -1,4 +1,4 @@
-import {scan} from "./scan.js";
+import {scan, buildPath} from "./scan.js";
 import {buildHackingProgramList, countAvailablePrograms} from "./hacking-programs.js";
 
 /** @param {NS} ns */
@@ -30,6 +30,11 @@ function launchScript(ns, script, server) {
 
 /** @param {NS} ns */
 export async function main(ns) {
+    ns.disableLog('scan');
+    ns.disableLog('sleep');
+    ns.disableLog('getServerRequiredHackingLevel');
+    ns.disableLog('getServerNumPortsRequired');
+
     const replace = false;  // Replace an existing script
 
     while (true) {
@@ -43,7 +48,7 @@ export async function main(ns) {
         for (const server of serverList) {
             ns.print('Current server: ' + server);
 
-            // Check server level vs our level
+            // Check server level vs player level
             var machineHackingLevel = ns.getServerRequiredHackingLevel(server);
             ns.print('Level player, level machine: ' + playerHackingLevel + ', ' + machineHackingLevel);
             if (playerHackingLevel<machineHackingLevel) {
@@ -62,6 +67,25 @@ export async function main(ns) {
                 ns.nuke(server);
             }
 
+            if (ns.hasRootAccess(server)) {
+                const path = await buildPath(ns, server);
+                for (let item of path) {
+                    // ns.print(`Connecting to ${item} from ${ns.singularity.getCurrentServer()}`);
+                    if (!ns.singularity.connect(item)) {
+                        ns.print(`Error while connecting to ${item}`);
+                    };
+                }
+                
+                await ns.singularity.installBackdoor();
+                
+                for (let item of path.reverse()) {
+                    // ns.print(`Connecting to ${item} from ${ns.singularity.getCurrentServer()}`);
+                    if (!ns.singularity.connect(item)) {
+                        ns.print(`Error while connecting to ${item}`);
+                    };
+                }
+            }
+
             if (replace) {
                 ns.killall(server);
             }
@@ -76,12 +100,14 @@ export async function main(ns) {
             if (!ns.isRunning('hack-server.js', server)) {
                 launchScript(ns, 'hack-server.js', server);
             }
+
+            ns.print('----------\n');
         }
 
         if (replace) {
             break;
         }
 
-        await ns.sleep(1000*30) // sleep for 30 sec
+        await ns.sleep(1000*60*2) // sleep for 2 min
     }
 }

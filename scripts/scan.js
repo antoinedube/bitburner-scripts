@@ -17,3 +17,29 @@ export async function scan(ns) {
 
     return serverList;
 }
+
+/** @param {NS} ns */
+export async function buildPath(ns, server) {
+    let pathList = [['home']];
+
+    while (true) {
+        const currentPath = pathList.pop();
+        const lastItem = currentPath.pop();
+        const neighbors = ns.scan(lastItem);
+        const neighborsWithoutServers = neighbors.filter(name => !name.startsWith('neighbor-') && !currentPath.includes(name));
+
+        for (let neighbor of neighborsWithoutServers) {
+            let newPath = currentPath.slice();
+            newPath.push(lastItem);
+            newPath.push(neighbor);
+
+            if (neighbor==server) {
+                return newPath;
+            }
+
+            pathList.unshift(newPath);
+        }
+
+        await ns.sleep(10);  // Just so that the editor does not complain...
+    }
+}
