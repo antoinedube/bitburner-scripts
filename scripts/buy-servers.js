@@ -25,8 +25,9 @@ async function launchScript(ns, scriptName, server) {
 /** @param {NS} ns */
 export async function main(ns) {
 	ns.disableLog('ALL');
-	let targetRam = 4;
-	ns.print(`Target ram: ${targetRam}`);
+	let targetRam = 16;
+	const targetRamPrice = ns.getPurchasedServerCost(targetRam);
+	ns.print(`Target ram: ${targetRam}, price: ${formatNumber(targetRamPrice, '$')}`);
 
 	while (targetRam<=ns.getPurchasedServerMaxRam()) {
 		const serverList = await scan(ns);
@@ -51,7 +52,8 @@ export async function main(ns) {
 
 		if (countServerWithTargetRam==ns.getPurchasedServerLimit()) {
 			targetRam *= 4;
-			ns.print(`Target ram: ${targetRam}`);
+			const targetRamPrice = ns.getPurchasedServerCost(targetRam);
+			ns.print(`Target ram: ${targetRam}, price: ${formatNumber(targetRamPrice, '$')}`);
 		}
 
 		const newServerCost = ns.getPurchasedServerCost(targetRam);

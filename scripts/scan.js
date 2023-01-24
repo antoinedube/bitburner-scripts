@@ -1,15 +1,16 @@
 /** @param {NS} ns */
 export async function scan(ns) {
-	let servers_to_scan = ['home'];
+	let serversToScan = ['home'];
+    const serversToAvoid = ['.', 'darkweb', 'CSEC', 'avmnite-02h', 'I.I.I.I', 'run4theh111z', 'The-Cave', 'w0r1d_d43m0n'];
     let serverList = [];
 
-    while (servers_to_scan.length>0) {
-        const server = servers_to_scan.pop();
+    while (serversToScan.length>0) {
+        const server = serversToScan.pop();
         const neighbors = ns.scan(server);
 
         for (const neighbor of neighbors) {
-            if (neighbor!='home' && !serverList.includes(neighbor)) {
-                servers_to_scan.push(neighbor);
+            if (neighbor!='home' && !serverList.includes(neighbor) && !serversToAvoid.includes(neighbor)) {
+                serversToScan.push(neighbor);
                 serverList.push(neighbor);
             }
         }
