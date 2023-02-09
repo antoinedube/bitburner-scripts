@@ -52,14 +52,16 @@ export async function main(ns) {
             // Check server level vs player level
             var machineHackingLevel = ns.getServerRequiredHackingLevel(server);
             ns.print(`Level player: ${playerHackingLevel}, level machine: ${machineHackingLevel}`);
+
+            // Check number of ports required vs number of programs available
+            var requiredNumberOfPorts = ns.getServerNumPortsRequired(server);
+            ns.print(`Required num ports: ${requiredNumberOfPorts}, current num ports: ${currentNumberOfPorts}`);
+            
             if (playerHackingLevel<machineHackingLevel) {
                 ns.print('----------\n');
                 continue;
             }
 
-            // Check number of ports required vs number of programs available
-            var requiredNumberOfPorts = ns.getServerNumPortsRequired(server);
-            ns.print(`Required num ports: ${requiredNumberOfPorts}, current num ports: ${currentNumberOfPorts}`);
             if (currentNumberOfPorts<requiredNumberOfPorts) {
                 ns.print('----------\n');
                 continue;
@@ -115,6 +117,6 @@ export async function main(ns) {
             break;
         }
 
-        await ns.sleep(1000*60*2) // sleep for 2 min
+        await ns.sleep(1000*30) // sleep for 2 min
     }
 }

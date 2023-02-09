@@ -3,7 +3,7 @@ export async function main(ns) {
     ns.disableLog('getServerMoneyAvailable');
     ns.disableLog('sleep');
 
-    const targetCount = 12;  // Start: 9, Max: 24
+    const targetCount = 21;  // Start: 9, Max: 21
     const targetLevel = 200;  // Start: 50, Max: 200
     const targetRam = 64;  // Start: 1, Max: 64
     const targetCore = 16;  // Start: 1, Max: 16
@@ -40,27 +40,6 @@ export async function main(ns) {
             }
         }
 
-        let countCompletelyUpgraded = 0;
-        if (ns.hacknet.numNodes()==targetCount) {
-            for (let i=0; i<ns.hacknet.numNodes(); i++) {
-                const nodeStats = ns.hacknet.getNodeStats(i);
-                const allLevelUpgraded = nodeStats.level==targetLevel;
-                const allRamUpgraded = nodeStats.ram==targetRam;
-
-                if (allLevelUpgraded && allRamUpgraded) {
-                    countCompletelyUpgraded++;
-                }
-            }
-        }
-
-        if (countCompletelyUpgraded==targetCount) {
-            break;
-        }
-
-        await ns.sleep(500);
-    }
-
-    while (true) {
         for (let i=0; i<ns.hacknet.numNodes(); i++) {
             if (ns.hacknet.getNodeStats(i).cores < targetCore) {
                 const cost = ns.hacknet.getCoreUpgradeCost(i, 1);
@@ -76,9 +55,12 @@ export async function main(ns) {
         if (ns.hacknet.numNodes()==targetCount) {
             for (let i=0; i<ns.hacknet.numNodes(); i++) {
                 const nodeStats = ns.hacknet.getNodeStats(i);
+                const allLevelUpgraded = nodeStats.level==targetLevel;
+                const allRamUpgraded = nodeStats.ram==targetRam;
                 const allCoreUpgraded = nodeStats.cores==targetCore;
 
-                if (allCoreUpgraded) {
+
+                if (allLevelUpgraded && allRamUpgraded && allCoreUpgraded) {
                     countCompletelyUpgraded++;
                 }
             }

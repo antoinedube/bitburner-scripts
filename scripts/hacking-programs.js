@@ -14,7 +14,7 @@ export function listAvailablePrograms(ns, hackingPrograms) {
     let availablePrograms = [];
     for (const program of hackingPrograms) {
         if (ns.fileExists(program.executableName, "home")) {
-            ns.print(program.executableName + ' is available');
+            // ns.print(program.executableName + ' is available');
             availablePrograms.push(program);
         }
     }
