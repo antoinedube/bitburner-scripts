@@ -3,10 +3,10 @@ export async function main(ns) {
     ns.disableLog('getServerMoneyAvailable');
     ns.disableLog('sleep');
 
-    const targetCount = 21;  // Start: 9, Max: 21
-    const targetLevel = 200;  // Start: 50, Max: 200
-    const targetRam = 64;  // Start: 1, Max: 64
-    const targetCore = 16;  // Start: 1, Max: 16
+    const targetCount = 9;
+    const targetLevel = 200;
+    const targetRam = 64;
+    const targetCore = 16;
 
     while (true) {
         if (ns.hacknet.numNodes() < targetCount) {
