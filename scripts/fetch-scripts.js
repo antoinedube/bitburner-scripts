@@ -5,11 +5,24 @@ export async function main(ns) {
     }
 
     const scripts = [
-        'bootstrap.js', 'buy-hacknet-nodes.js', 'buy-servers.js',
-        'delete-servers.js', 'fetch-scripts.js', 'format-numbers.js',
-        'grow-remote.js', 'hack-server.js', 'hack-remote.js', 'hacking-programs.js',
-        'launch-hacking.js', 'list-server-prices.js', 'list-server-money.js', 'list-server-security-level.js',
-        'scan.js', 'weaken-remote.js', 'list-player-karma.js', 'weaken-remote.js'
+        'bootstrap.js',
+        'buy-hacknet-nodes.js',
+        'buy-servers.js',
+        'delete-servers.js',
+        'fetch-scripts.js',
+        'format-numbers.js',
+        'grow-remote.js',
+        'hack-remote.js',
+        'hack-server.js',
+        'hacking-programs.js',
+        'launch-hacking.js',
+        'list-player-karma.js',
+        'list-server-money.js',
+        'list-server-prices.js',
+        'list-server-security-level.js',
+        'manage-gang.js',
+        'scan.js',
+        'weaken-remote.js'
     ];
 
     for (const scriptName of scripts) {
