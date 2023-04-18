@@ -1,17 +1,18 @@
 /** @param {NS} ns */
 export async function main(ns) {
-	const scripts = ['launch-hacking.js', 'buy-hacknet-nodes.js', 'buy-servers.js'];
+    const scripts = ['launch-hacking.js', 'buy-hacknet-nodes.js', 'buy-servers.js',
+                     'manage-sleeves.js'/*, 'manage-gang.js'*/];
 
-	for (let script of scripts) {
-		if (!ns.isRunning(script)) {
-			ns.run(script);
-		}
-	}
+    for (let script of scripts) {
+        if (!ns.isRunning(script)) {
+            ns.run(script);
+        }
+    }
 
-	await ns.sleep(5000);
+    await ns.sleep(5000);
 
-	const hackingScript = 'hack-remote.js';
-	const scriptRam = ns.getScriptRam(hackingScript);
+    const hackingScript = 'hack-remote.js';
+    const scriptRam = ns.getScriptRam(hackingScript);
     const availableRam = ns.getServerMaxRam('home') - ns.getServerUsedRam('home');
     ns.print(`Available ram: ${availableRam}`);
 

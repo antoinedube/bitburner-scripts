@@ -23,15 +23,15 @@ function scan_for_full_server_list(ns, root) {
 /** @param {NS} ns */
 export async function main(ns) {
     const runningScript = ns.getRunningScript();
-	const numThreads = runningScript.threads;
-	
+    const numThreads = runningScript.threads;
+
     while (true) {
         let server_list = scan_for_full_server_list(ns, 'home');
 
         ns.print('server list:\n' + server_list);
 
-		for (const server of server_list) {
-			await ns.weaken(server, { threads: numThreads });
-		}
-	}
+        for (const server of server_list) {
+            await ns.weaken(server, { threads: numThreads });
+        }
+    }
 }
