@@ -34,17 +34,9 @@ function assignMember(ns, name, task = '') {
         if (currentTask!=task) {
             ns.gang.setMemberTask(name, task);
         }
-    } else if (hackingLevel<30) {
-        if (currentTask!='Ransomware') {
-            ns.gang.setMemberTask(name, 'Ransomware');
-        }
-    } else if (hackingLevel<60) {
-        if (currentTask!='Phishing') {
-            ns.gang.setMemberTask(name, 'Phishing');
-        }
     } else if (hackingLevel<120) {
-        if (currentTask!='Identity Theft') {
-            ns.gang.setMemberTask(name, 'Identity Theft');
+        if (currentTask!='Cyberterrorism') {
+            ns.gang.setMemberTask(name, 'Cyberterrorism');
         }
     } else {
         if (currentTask!='Money Laundering') {
