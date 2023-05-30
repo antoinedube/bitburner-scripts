@@ -22,12 +22,12 @@ export async function main(ns) {
         const currentMoney = ns.getServerMoneyAvailable(targetHost);
         const maxMoney = ns.getServerMaxMoney(targetHost);
         const targetMoneyAmount = computeTargetLevel(currentMoney, maxMoney, a, b);
-        
+
         ns.print(`a: ${a}, b: ${b}`);
-        ns.print('Security\tcurrent: ' + currentLevel.toFixed(decimalPlaces) 
+        ns.print('Security\tcurrent: ' + currentLevel.toFixed(decimalPlaces)
                     + ', minimum: ' + minLevel.toFixed(decimalPlaces)
                     + ', target: ' + targetSecurityLevel.toFixed(decimalPlaces));
-        ns.print('Money\tcurrent: ' + currentMoney.toFixed(decimalPlaces) 
+        ns.print('Money\tcurrent: ' + currentMoney.toFixed(decimalPlaces)
                     + ', maximum: ' + maxMoney.toFixed(decimalPlaces)
                     + ', target: ' + targetMoneyAmount.toFixed(decimalPlaces));
 

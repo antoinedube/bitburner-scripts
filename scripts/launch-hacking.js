@@ -56,7 +56,7 @@ export async function main(ns) {
             // Check number of ports required vs number of programs available
             var requiredNumberOfPorts = ns.getServerNumPortsRequired(server);
             ns.print(`Required num ports: ${requiredNumberOfPorts}, current num ports: ${currentNumberOfPorts}`);
-            
+
             if (playerHackingLevel<machineHackingLevel) {
                 ns.print('----------\n');
                 continue;
@@ -71,7 +71,7 @@ export async function main(ns) {
                 await openPorts(ns, hackingPrograms, server);
                 ns.nuke(server);
             }
-            
+
             ns.print(`hasRootAccess: ${ns.hasRootAccess(server)}`);
 
             const isBackdoorInstalled = ns.getServer(server).backdoorInstalled;
@@ -84,9 +84,9 @@ export async function main(ns) {
                         ns.print(`Error while connecting to ${item}`);
                     };
                 }
-                
+
                 await ns.singularity.installBackdoor();
-                
+
                 for (let item of path.reverse()) {
                     // ns.print(`Connecting to ${item} from ${ns.singularity.getCurrentServer()}`);
                     if (!ns.singularity.connect(item)) {

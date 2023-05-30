@@ -1,6 +1,6 @@
 /** @param {NS} ns */
 async function scan(ns) {
-	let servers_to_scan = ['home'];
+    let servers_to_scan = ['home'];
     let serverList = [];
 
     while (servers_to_scan.length>0) {
@@ -38,7 +38,7 @@ function hasSecurityLevel(ns, server) {
     const currentLevel = ns.getServerSecurityLevel(server);
     const minLevel = ns.getServerMinSecurityLevel(server);
     const target = 1.10*minLevel;
-    
+
     ns.print(`[${server}] Security level -> current: ${currentLevel.toFixed(2)}, target: ${target.toFixed(2)}`);
     return currentLevel < target;
 }
@@ -51,7 +51,7 @@ export async function main(ns) {
     ns.enableLog('weaken');
 
     const runningScript = ns.getRunningScript();
-	const numThreads = runningScript.threads;
+    const numThreads = runningScript.threads;
 
     while (true) {
         const fullServerList = await scan(ns);
