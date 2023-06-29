@@ -1,7 +1,7 @@
 /** @param {NS} ns */
 export async function scan(ns) {
     let serversToScan = ['home'];
-    const serversToAvoid = ['darkweb', 'The-Cave', 'w0r1d_d43m0n'];
+    const serversToAvoid = ['darkweb', 'w0r1d_d43m0n'];
     let serverList = [];
 
     while (serversToScan.length>0) {
