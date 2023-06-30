@@ -1,9 +1,9 @@
 /** @param {NS} ns */
 export async function main(ns) {
-    const scripts = ['launch-hacking.js', 
-										 'spend-hashes.js', /*'buy-servers.js',*/
-                     'manage-sleeves.js', 'manage-gang.js', 
-										 'launch-on-servers.js'];
+    const scripts = ['launch-hacking.js',
+                     'spend-hashes.js', /*'buy-servers.js',*/
+                     'manage-sleeves.js', 'manage-gang.js',
+                     'launch-on-servers.js'];
 
     for (let script of scripts) {
         if (!ns.isRunning(script)) {
