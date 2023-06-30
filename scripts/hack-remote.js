@@ -55,7 +55,7 @@ export async function main(ns) {
 
     while (true) {
         const fullServerList = await scan(ns);
-        const serverList = fullServerList.filter(name => !name.startsWith('neighbor-'));
+        const serverList = fullServerList.filter(name => !name.startsWith('neighbor-') && !name.startsWith('hacknet-server'));
         const server = serverList[Math.floor(Math.random()*serverList.length)];
 
         if (!isAccessible(ns, server)) {

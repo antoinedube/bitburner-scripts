@@ -3,18 +3,40 @@ export async function main(ns) {
     ns.disableLog('getServerMoneyAvailable');
     ns.disableLog('sleep');
 
-    const targetCount = 12;  // Max: 12
-    const targetLevel = 200;  // Max: 200
-    const targetRam = 64;  // Max: 64
-    const targetCore = 16;  // Max: 16
+		/*
+			ns.formulas.hacknetServers.constants()
+			{
+				"HashesPerLevel":0.001,
+				"BaseCost":50000,
+				"RamBaseCost":200000,
+				"CoreBaseCost":1000000,
+				"CacheBaseCost":10000000,
+				"PurchaseMult":3.2,
+				"UpgradeLevelMult":1.1,
+				"UpgradeRamMult":1.4,
+				"UpgradeCoreMult":1.55,
+				"UpgradeCacheMult":1.85,
+				"MaxServers":20,
+				"MaxLevel":300,
+				"MaxRam":8192,
+				"MaxCores":128,
+				"MaxCache":15
+			}
+		*/
+		const hacknetConstants = ns.formulas.hacknetServers.constants();
+
+    const targetCount = 9;
+    const targetLevel = hacknetConstants['MaxLevel'];
+    const targetRam = hacknetConstants['MaxRam'];
+    const targetCore = hacknetConstants['MaxCores'];
+		const targetCache = 1;  // hacknetConstants['MaxCache'];
 
     while (true) {
         if (ns.hacknet.numNodes() < targetCount) {
             const cost = ns.hacknet.getPurchaseNodeCost();
             if (ns.getServerMoneyAvailable("home") >= cost) {
                 ns.hacknet.purchaseNode();
-            } else {
-                ns.print("Need $" + cost.toFixed(2) + ". Have $" + ns.getServerMoneyAvailable("home").toFixed(2) + " to buy new node");
+								ns.print('Bought net node');
             }
         }
 
@@ -23,8 +45,8 @@ export async function main(ns) {
                 const cost = ns.hacknet.getLevelUpgradeCost(i, 1);
                 if (ns.getServerMoneyAvailable("home") >= cost) {
                     ns.hacknet.upgradeLevel(i, 1);
-                } else {
-                    ns.print("Need $" + cost.toFixed(2) + ". Have $" + ns.getServerMoneyAvailable("home").toFixed(2) + " to upgrade level");
+										const newLevel = ns.hacknet.getNodeStats(i).level;
+										ns.print(`Upgrading node ${i} to level ${newLevel}`);
                 }
             }
         }
@@ -34,8 +56,8 @@ export async function main(ns) {
                 const cost = ns.hacknet.getRamUpgradeCost(i, 1);
                 if (ns.getServerMoneyAvailable("home") >= cost) {
                     ns.hacknet.upgradeRam(i, 1);
-                } else {
-                    ns.print("Need $" + cost.toFixed(2) + ". Have $" + ns.getServerMoneyAvailable("home").toFixed(2) + " to upgrade RAM");
+										const newLevel = ns.hacknet.getNodeStats(i).ram;
+										ns.print(`Upgrading node ${i} to ram ${newLevel}`);
                 }
             }
         }
@@ -45,11 +67,22 @@ export async function main(ns) {
                 const cost = ns.hacknet.getCoreUpgradeCost(i, 1);
                 if (ns.getServerMoneyAvailable("home") >= cost) {
                     ns.hacknet.upgradeCore(i, 1);
-                } else {
-                    ns.print("Need $" + cost.toFixed(2) + ". Have $" + ns.getServerMoneyAvailable("home").toFixed(2) + " to upgrade core");
+										const newLevel = ns.hacknet.getNodeStats(i).cores;
+										ns.print(`Upgrading node ${i} to cores ${newLevel}`);
                 }
             }
         }
+
+				for (let i=0; i<ns.hacknet.numNodes(); i++) {
+					if (ns.hacknet.getNodeStats(i).cache < targetCache) {
+						const cost = ns.hacknet.getCacheUpgradeCost(i, 1);
+						if (ns.getServerMoneyAvailable("home") >= cost) {
+							ns.hacknet.upgradeCache(i, 1);
+							const newLevel = ns.hacknet.getNodeStats(i).cache;
+							ns.print(`Upgrading node ${i} to cache ${newLevel}`);
+						}
+					}
+				}
 
         let countCompletelyUpgraded = 0;
         if (ns.hacknet.numNodes()==targetCount) {
@@ -58,9 +91,10 @@ export async function main(ns) {
                 const allLevelUpgraded = nodeStats.level==targetLevel;
                 const allRamUpgraded = nodeStats.ram==targetRam;
                 const allCoreUpgraded = nodeStats.cores==targetCore;
+								const allCacheUpgraded = nodeStats.cache==targetCache;
 
 
-                if (allLevelUpgraded && allRamUpgraded && allCoreUpgraded) {
+                if (allLevelUpgraded && allRamUpgraded && allCoreUpgraded &&  allCacheUpgraded) {
                     countCompletelyUpgraded++;
                 }
             }

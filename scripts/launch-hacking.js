@@ -40,7 +40,7 @@ export async function main(ns) {
 
     while (true) {
         const fullServerList = await scan(ns, 'home');
-        const serverList = fullServerList.filter(name => !name.startsWith('neighbor-'));
+        const serverList = fullServerList.filter(name => !name.startsWith('neighbor-') && !name.startsWith('hacknet-server'));
 
         for (const server of serverList) {
             ns.print(`Current server: ${server}`);

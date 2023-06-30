@@ -1,7 +1,9 @@
 /** @param {NS} ns */
 export async function main(ns) {
-    const scripts = ['launch-hacking.js', 'buy-hacknet-nodes.js', 'buy-servers.js',
-                     /*'manage-sleeves.js'*/, 'manage-gang.js'];
+    const scripts = ['launch-hacking.js', 
+										 'spend-hashes.js', /*'buy-servers.js',*/
+                     'manage-sleeves.js', 'manage-gang.js', 
+										 'launch-on-servers.js'];
 
     for (let script of scripts) {
         if (!ns.isRunning(script)) {
@@ -12,8 +14,8 @@ export async function main(ns) {
         }
     }
 
-    ns.tprint('Sleeping for 5 sec');
-    await ns.sleep(5000);
+    ns.tprint('Sleeping for 2 sec');
+    await ns.sleep(2*1000);
 
     const hackingScript = 'hack-remote.js';
     const scriptRam = ns.getScriptRam(hackingScript);
