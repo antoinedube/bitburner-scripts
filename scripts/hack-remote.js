@@ -1,5 +1,5 @@
 /** @param {NS} ns */
-async function scan(ns) {
+async function buildServerList(ns) {
     let servers_to_scan = ['home'];
     let serverList = [];
 
@@ -54,8 +54,8 @@ export async function main(ns) {
     const numThreads = runningScript.threads;
 
     while (true) {
-        const fullServerList = await scan(ns);
-        const serverList = fullServerList.filter(name => !name.startsWith('neighbor-') && !name.startsWith('hacknet-server'));
+        const fullServerList = await buildServerList(ns);
+        const serverList = fullServerList.filter(name => !name.startsWith('neighbor-') && !name.startsWith('hacknet-'));
         const server = serverList[Math.floor(Math.random()*serverList.length)];
 
         if (!isAccessible(ns, server)) {

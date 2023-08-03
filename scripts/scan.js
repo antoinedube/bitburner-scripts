@@ -1,7 +1,6 @@
 /** @param {NS} ns */
 export async function scan(ns) {
     let serversToScan = ['home'];
-    const serversToAvoid = ['darkweb', 'The-Cave', 'w0r1d_d43m0n'];
     let serverList = [];
 
     while (serversToScan.length>0) {
@@ -9,7 +8,7 @@ export async function scan(ns) {
         const neighbors = ns.scan(server);
 
         for (const neighbor of neighbors) {
-            if (neighbor!='home' && !serverList.includes(neighbor) && !serversToAvoid.includes(neighbor)) {
+            if (neighbor!='home' && !serverList.includes(neighbor)) {
                 serversToScan.push(neighbor);
                 serverList.push(neighbor);
             }
@@ -27,7 +26,11 @@ export async function buildPath(ns, server) {
         const currentPath = pathList.pop();
         const lastItem = currentPath.pop();
         const neighbors = ns.scan(lastItem);
-        const neighborsWithoutServers = neighbors.filter(name => !name.startsWith('neighbor-') && !currentPath.includes(name));
+        const neighborsWithoutServers = neighbors.filter(name => {
+              !name.startsWith('neighbor-')
+              && !name.startsWith('hacknet-')
+              && !currentPath.includes(name)
+        });
 
         for (let neighbor of neighborsWithoutServers) {
             let newPath = currentPath.slice();
@@ -41,6 +44,6 @@ export async function buildPath(ns, server) {
             pathList.unshift(newPath);
         }
 
-        await ns.sleep(10);  // Just so that the editor does not complain...
+        await ns.sleep(250);  // Just so that the editor does not complain...
     }
 }

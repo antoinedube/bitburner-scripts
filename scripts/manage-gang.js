@@ -111,10 +111,16 @@ function ascendIfGainIsWorth(ns) {
 /** @param {NS} ns */
 export async function main(ns) {
     ns.disableLog('sleep');
-    ns.gang.getMemberNames().map(memberName => displayMembersInformation(ns, memberName));
     let counter = 0;
 
     while (true) {
+        if (!ns.gang.inGang()) {
+            ns.print(`Not in gang. Waiting.`);
+            await ns.sleep(1000*60*5);
+            continue;
+        }
+
+        ns.gang.getMemberNames().map(memberName => displayMembersInformation(ns, memberName));
         recruitIfPossible(ns);
         ascendIfGainIsWorth(ns);
         reassignMembersAccordingToWantedLevelPenalty(ns);

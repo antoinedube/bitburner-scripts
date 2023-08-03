@@ -17,7 +17,7 @@ export async function main(ns) {
 
         const maxRam = ns.getServerMaxRam(server);
         const usedRam = ns.getServerUsedRam(server);
-        const availableRam = 0.75*(maxRam - usedRam); // Factor: leave room for hash computation
+        const availableRam = 0.95*(maxRam - usedRam); // Factor: leave room for hash computation
         const scriptRam = ns.getScriptRam(scriptName, server);
         const numThreads = Math.floor(availableRam/scriptRam);
 

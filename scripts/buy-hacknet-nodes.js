@@ -25,7 +25,7 @@ export async function main(ns) {
     */
     const hacknetConstants = ns.formulas.hacknetServers.constants();
 
-    const targetCount = 9;
+    const targetCount = 20;
     const targetLevel = hacknetConstants['MaxLevel'];
     const targetRam = hacknetConstants['MaxRam'];
     const targetCore = hacknetConstants['MaxCores'];
