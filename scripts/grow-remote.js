@@ -1,23 +1,21 @@
 /** @param {NS} ns */
-function scan_for_full_server_list(ns, root) {
-    let servers_to_scan = [root];
-    let server_list = [];
+function buildServerList(ns) {
+    let serversToScan = ['home'];
+    let serverList = [];
 
-    while (servers_to_scan.length>0) {
-        const server = servers_to_scan.pop();
+    while (serversToScan.length>0) {
+        const server = serversToScan.pop();
         const neighbors = ns.scan(server);
 
         for (const neighbor of neighbors) {
-            if (neighbor!='home' && !neighbor.startsWith('neighbor') && ns.hasRootAccess(neighbor) && !server_list.includes(neighbor)) {
-                servers_to_scan.push(neighbor);
-                server_list.push(neighbor);
+            if (neighbor!='home' && !serverList.includes(neighbor)) {
+                serversToScan.push(neighbor);
+                serverList.push(neighbor);
             }
         }
     }
 
-    ns.print('Server list: ' + server_list);
-
-    return server_list;
+    return serverList;
 }
 
 /** @param {NS} ns */
@@ -26,7 +24,7 @@ export async function main(ns) {
     const numThreads = runningScript.threads;
 
     while (true) {
-        let server_list = scan_for_full_server_list(ns, 'home');
+        let server_list = buildServerList(ns, 'home');
 
         ns.print('server list:\n' + server_list);
 

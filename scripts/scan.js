@@ -1,5 +1,5 @@
 /** @param {NS} ns */
-export async function scan(ns) {
+export function scanAllNetwork(ns) {
     let serversToScan = ['home'];
     let serverList = [];
 
@@ -26,11 +26,7 @@ export async function buildPath(ns, server) {
         const currentPath = pathList.pop();
         const lastItem = currentPath.pop();
         const neighbors = ns.scan(lastItem);
-        const neighborsWithoutServers = neighbors.filter(name => {
-              !name.startsWith('neighbor-')
-              && !name.startsWith('hacknet-')
-              && !currentPath.includes(name)
-        });
+        const neighborsWithoutServers = neighbors.filter(name => !name.startsWith('neighbor-') && !name.startsWith('hacknet-') && !currentPath.includes(name));
 
         for (let neighbor of neighborsWithoutServers) {
             let newPath = currentPath.slice();

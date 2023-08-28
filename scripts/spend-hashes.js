@@ -1,7 +1,7 @@
 /** @param {NS} ns */
 export async function main(ns) {
     ns.disableLog('getServerMoneyAvailable');
-    ns.disableLog('sleep');
+  ns.disableLog('sleep');
     /*
             const upgrades = ns.hacknet.getHashUpgrades();
 

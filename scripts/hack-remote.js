@@ -1,15 +1,15 @@
 /** @param {NS} ns */
-async function buildServerList(ns) {
-    let servers_to_scan = ['home'];
+function buildServerList(ns) {
+    let serversToScan = ['home'];
     let serverList = [];
 
-    while (servers_to_scan.length>0) {
-        const server = servers_to_scan.pop();
+    while (serversToScan.length>0) {
+        const server = serversToScan.pop();
         const neighbors = ns.scan(server);
 
         for (const neighbor of neighbors) {
             if (neighbor!='home' && !serverList.includes(neighbor)) {
-                servers_to_scan.push(neighbor);
+                serversToScan.push(neighbor);
                 serverList.push(neighbor);
             }
         }
@@ -54,9 +54,13 @@ export async function main(ns) {
     const numThreads = runningScript.threads;
 
     while (true) {
-        const fullServerList = await buildServerList(ns);
-        const serverList = fullServerList.filter(name => !name.startsWith('neighbor-') && !name.startsWith('hacknet-'));
-        const server = serverList[Math.floor(Math.random()*serverList.length)];
+                await ns.sleep(500);
+
+        const fullServerList = buildServerList(ns);
+        const filteredServerList = fullServerList.filter(name => !name.startsWith('neighbor-') && !name.startsWith('hacknet-'));
+
+        const serverIndex = Math.floor(Math.random()*filteredServerList.length);
+        const server = filteredServerList[serverIndex];
 
         if (!isAccessible(ns, server)) {
             continue;

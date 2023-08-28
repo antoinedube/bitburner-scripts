@@ -1,4 +1,4 @@
-import {scan, buildPath} from "./scan.js";
+import {scanAllNetwork, buildPath} from "./scan.js";
 import {buildHackingProgramList, countAvailablePrograms} from "./hacking-programs.js";
 
 /** @param {NS} ns */
@@ -39,14 +39,12 @@ export async function main(ns) {
     const replace = false;  // Replace an existing script
 
     while (true) {
-        const fullServerList = await scan(ns, 'home');
-        const serverList = fullServerList.filter(name => {
-            !name.startsWith('neighbor-')
-            && !name.startsWith('hacknet-server')
-            && name!='w0r1d_d43m0n'
-        });
+        const fullServerList = scanAllNetwork(ns, 'home');
+        const filteredServerList = fullServerList.filter(name => !name.startsWith('neighbor-') && !name.startsWith('hacknet-') && name!='w0r1d_d43m0n');
 
-        for (const server of serverList) {
+        ns.print(`Server list: ${filteredServerList}`)
+
+        for (const server of filteredServerList) {
             ns.print(`Current server: ${server}`);
 
             const playerHackingLevel = ns.getHackingLevel();
@@ -92,7 +90,6 @@ export async function main(ns) {
                 await ns.singularity.installBackdoor();
 
                 for (let item of path.reverse()) {
-                    // ns.print(`Connecting to ${item} from ${ns.singularity.getCurrentServer()}`);
                     if (!ns.singularity.connect(item)) {
                         ns.print(`Error while connecting to ${item}`);
                     };
@@ -121,6 +118,6 @@ export async function main(ns) {
             break;
         }
 
-        await ns.sleep(1000*30) // sleep for 2 min
+        await ns.sleep(1000*5);
     }
 }

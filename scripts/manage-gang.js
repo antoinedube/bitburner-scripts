@@ -121,6 +121,7 @@ export async function main(ns) {
         }
 
         ns.gang.getMemberNames().map(memberName => displayMembersInformation(ns, memberName));
+
         recruitIfPossible(ns);
         ascendIfGainIsWorth(ns);
         reassignMembersAccordingToWantedLevelPenalty(ns);
