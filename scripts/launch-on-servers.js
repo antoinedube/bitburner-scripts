@@ -5,10 +5,7 @@ export async function main(ns) {
     const scriptName = 'hack-remote.js';
     const serverList = scanAllNetwork(ns);
     // const purchasedServers = serverList.filter(name => name.startsWith('neighbor-'));
-    const purchasedServers = serverList.filter(name => {
-          name.startsWith('hacknet-server-')
-            && name!='w0r1d_d43m0n'
-    });
+    const purchasedServers = serverList.filter(name => name.startsWith('hacknet-server-') || name.startsWith('neighbor-') );
 
     for (let server of purchasedServers) {
         const scpStatus = ns.scp(scriptName, server, 'home');

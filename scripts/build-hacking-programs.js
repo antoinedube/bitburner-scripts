@@ -15,7 +15,7 @@ export async function main(ns) {
         // { "name": "ServerProfiler.exe", "requiredLevel": 75 },
         // { "name": "AutoLink.exe", "requiredLevel": 25 }
     ];
-
+    
     while (!ns.fileExists("SQLInject.exe", "home")) {  // SQLInject is the most "expensive", so the last to be built
         for (let program of programsRequiredLevel) {
             const playerLevel = ns.getHackingLevel();
