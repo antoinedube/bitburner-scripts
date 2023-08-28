@@ -24,9 +24,5 @@ export function listAvailablePrograms(ns, hackingPrograms) {
 /** @param {NS} ns */
 export function countAvailablePrograms(ns, hackingPrograms) {
     const availablePrograms = listAvailablePrograms(ns, hackingPrograms);
-
-    const numberAvailablePrograms = availablePrograms.length;
-    ns.tprint("There are " + numberAvailablePrograms + " existing programs");
-
-    return numberAvailablePrograms;
+    return availablePrograms.length;
 }
