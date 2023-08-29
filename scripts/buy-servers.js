@@ -1,4 +1,5 @@
-import { scanAllNetwork } from "./scan.js";
+import { scanAllNetwork } from "./scan";
+import { formatNumber } from "./format-numbers";
 
 /** @param {NS} ns */
 function launchScript(ns, scriptName, server) {
@@ -15,8 +16,9 @@ function launchScript(ns, scriptName, server) {
     const scriptRam = ns.getScriptRam(scriptName, server);
     const numThreads = Math.floor(availableRam/scriptRam);
     if (numThreads>0) {
-        const status = ns.exec(scriptName, server, numThreads);
-        ns.print(`script exec status: ${status}`);
+        if (ns.exec(scriptName, server, numThreads)==0) {
+            ns.print('Error launching script');
+        }
     }
 }
 
@@ -50,6 +52,8 @@ export async function main(ns) {
 
         if (countServerWithTargetRam==ns.getPurchasedServerLimit()) {
             targetRam *= 4;
+            const newServerCost = ns.getPurchasedServerCost(targetRam);
+            ns.print(`Target RAM: ${targetRam}\tcost: ${newServerCost}`);
         }
 
         const newServerCost = ns.getPurchasedServerCost(targetRam);
@@ -63,6 +67,7 @@ export async function main(ns) {
                 }
 
                 ns.purchaseServer(purchasedServer.name, targetRam);
+                ns.print(`Purchased server ${purchasedServer.name} with ${targetRam} RAM for ${formatNumber(newServerCost, '$')}`);
 
                 launchScript(ns, 'hack-remote.js', purchasedServer.name);
             }
@@ -71,6 +76,5 @@ export async function main(ns) {
         }
 
         await ns.sleep(1000*5);
-
     }
 }

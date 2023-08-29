@@ -18,9 +18,9 @@ async function setSleevesTask(ns) {
             // Ref: https://github.com/danielyxie/bitburner/blob/dev/src/Enums.ts
             // ns.sleeve.setToCommitCrime(i, 'Assassination');
             // ns.sleeve.setToCommitCrime(i, 'Heist');
-            ns.sleeve.setToCommitCrime(i, 'Mug');
+            // ns.sleeve.setToCommitCrime(i, 'Mug');
             // ns.sleeve.setToCommitCrime(i, 'Homicide');
-            // ns.sleeve.setToUniversityCourse(i, 'Rothman University', 'Computer Science');
+            ns.sleeve.setToUniversityCourse(i, 'Rothman University', 'Computer Science');
             // ns.sleeve.setToUniversityCourse(i, 'Rothman University', 'Algorithms');
         }
     }

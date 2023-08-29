@@ -9,8 +9,8 @@ export async function main(ns) {
 
     const programList = ns.singularity.getDarkwebPrograms();
     // https://github.com/danielyxie/bitburner/blob/dev/markdown/bitburner.singularity.getdarkwebprograms.md
-    ns.print(`Program list: ${programList}`);
 
+    ns.print(`Program list: ${programList}`);
     /*
     for (let program of programList) {
         if (ns.fileExists(program, 'home')) {

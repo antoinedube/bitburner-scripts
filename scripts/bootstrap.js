@@ -1,10 +1,8 @@
 /** @param {NS} ns */
 export async function main(ns) {
-    const scripts = [
-        'launch-hacking.js', 'spend-hashes.js',
-        /*'buy-hacknet-nodes.js', */'buy-servers.js',
-        'manage-sleeves.js', 'manage-gang.js'
-    ];
+    const scripts = ['launch-hacking.js', 'spend-hashes.js',
+                    /*'buy-hacknet-nodes.js', */'buy-servers.js',
+                     'manage-sleeves.js', 'manage-gang.js'];
 
     if (ns.isRunning('hack-remote.js')) {
         ns.kill('hack-remote.js', 'home');
@@ -29,7 +27,7 @@ export async function main(ns) {
     const scriptNumThreads = ~~(availableRam / scriptRam);
 
     if (scriptNumThreads>0) {
-        ns.tprint(`Launching script: ${hackingScript} with ${scriptNumThreads} threads`);
+              ns.tprint(`Launching script: ${hackingScript} with ${scriptNumThreads} threads`);
         ns.exec(hackingScript, 'home', scriptNumThreads);
     }
 }

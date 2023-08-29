@@ -108,15 +108,75 @@ function ascendIfGainIsWorth(ns) {
     });
 }
 
+function buyEquipment(ns) {
+    /*
+        [
+            "Baseball Bat",
+            "Katana",
+            "Glock 18C",
+            "P90C",
+            "Steyr AUG",
+            "AK-47",
+            "M15A10 Assault Rifle",
+            "AWM Sniper Rifle",
+            "Bulletproof Vest",
+            "Full Body Armor",
+            "Liquid Body Armor",
+            "Graphene Plating Armor",
+            "Ford Flex V20",
+            "ATX1070 Superbike",
+            "Mercedes-Benz S9001",
+            "White Ferrari",
+            "NUKE Rootkit",
+            "Soulstealer Rootkit",
+            "Demon Rootkit",
+            "Hmap Node",
+            "Jack the Ripper",
+            "Bionic Arms",
+            "Bionic Legs",
+            "Bionic Spine",
+            "BrachiBlades",
+            "Nanofiber Weave",
+            "Synthetic Heart",
+            "Synfibril Muscle",
+            "BitWire",
+            "Neuralstimulator",
+            "DataJack",
+            "Graphene Bone Lacings"
+            ]
+    */
+    const hackingUpgrades = ['NUKE Rootkit', 'Soulstealer Rootkit', 'Demon Rootkit', 'Hmap Node', 'Jack the Ripper'];
+    const hackingAugmentations = ['BitWire', 'Neuralstimulator', 'DataJack'];
+
+    ns.gang.getMemberNames().map(memberName => {
+        const memberInfo = ns.gang.getMemberInformation(memberName);
+        const memberHackingUpgrade = memberInfo['upgrades'];
+        const memberHackingAugmentations = memberInfo['augmentations'];
+
+        hackingUpgrades.map(upgrade => {
+            if (!memberHackingUpgrade.includes(upgrade) && ns.gang.getEquipmentCost(upgrade) < ns.getServerMoneyAvailable('home')) {
+                ns.gang.purchaseEquipment(memberName, upgrade);
+            }
+        });
+
+        hackingAugmentations.map(augmentation => {
+            if (!memberHackingAugmentations.includes(augmentation) && ns.gang.getEquipmentCost(augmentation) < ns.getServerMoneyAvailable('home')) {
+                ns.gang.purchaseEquipment(memberName, augmentation);
+            }
+        });
+    });
+}
+
 /** @param {NS} ns */
 export async function main(ns) {
     ns.disableLog('sleep');
+    ns.disableLog('getServerMoneyAvailable');
     let counter = 0;
 
     while (true) {
         if (!ns.gang.inGang()) {
             ns.print(`Not in gang. Waiting.`);
-            await ns.sleep(1000*60*5);
+            await ns.sleep(1000*60);
             continue;
         }
 
@@ -125,6 +185,7 @@ export async function main(ns) {
         recruitIfPossible(ns);
         ascendIfGainIsWorth(ns);
         reassignMembersAccordingToWantedLevelPenalty(ns);
+        buyEquipment(ns);
 
         if (counter>=25) {
             ns.gang.getMemberNames().map(memberName => assignMember(ns, memberName));
