@@ -25,22 +25,40 @@ function launchScript(ns, scriptName, server) {
 /** @param {NS} ns */
 export async function main(ns) {
     ns.disableLog('ALL');
-    let targetRam = 16;
+    let targetRam = 4;
+        while (targetRam<=ns.getPurchasedServerMaxRam()) {
+            const maxNumberOfServers = ns.getPurchasedServerLimit();
+            const availableMoney = ns.getServerMoneyAvailable('home');
+            const serverCost = ns.getPurchasedServerCost(targetRam);
+
+            if (availableMoney < maxNumberOfServers*serverCost) {
+                targetRam /= 2;
+                break;
+            }
+
+            targetRam *= 2;
+        }
+
+        if (targetRam<8) {
+            targetRam = 8;
+        }
+
+        ns.print(`Starting target ram: ${targetRam}`);
 
     while (targetRam<=ns.getPurchasedServerMaxRam()) {
         const serverList = scanAllNetwork(ns);
         const purchasedServers = serverList.filter(name => name.startsWith('neighbor-'));
 
-        let purchasedServersRam = purchasedServers.map(name => {
-            return {"name": name, "maxRam": ns.getServerMaxRam(name)};
+        let purchasedServersRam = purchasedServers.sort().map(name => {
+            return { "name": name, "maxRam": ns.getServerMaxRam(name) };
         });
 
-        if (purchasedServersRam.length<ns.getPurchasedServerLimit()) {
-            for (let i=purchasedServersRam.length; i<ns.getPurchasedServerLimit(); i++) {
-                const index = i+1;
-                const item = {"name": `neighbor-${index}`, "maxRam": 0};
+        let index = purchasedServersRam.length;
+        while (purchasedServersRam.length<ns.getPurchasedServerLimit()) {
+                const name = `neighbor-${index}`;
+                const item = { "name": name, "maxRam": 0 };
                 purchasedServersRam.push(item);
-            }
+                index++;
         }
 
         let countServerWithTargetRam = 0;
@@ -48,12 +66,6 @@ export async function main(ns) {
             if (purchasedServer.maxRam>=targetRam) {
                 countServerWithTargetRam++;
             }
-        }
-
-        if (countServerWithTargetRam==ns.getPurchasedServerLimit()) {
-            targetRam *= 4;
-            const newServerCost = ns.getPurchasedServerCost(targetRam);
-            ns.print(`Target RAM: ${targetRam}\tcost: ${newServerCost}`);
         }
 
         const newServerCost = ns.getPurchasedServerCost(targetRam);
@@ -73,6 +85,12 @@ export async function main(ns) {
             }
 
             await ns.sleep(250);
+        }
+
+        if (countServerWithTargetRam==ns.getPurchasedServerLimit()) {
+            targetRam *= 2;
+            const newServerCost = ns.getPurchasedServerCost(targetRam);
+            ns.print(`Target RAM: ${targetRam}\tcost: ${formatNumber(newServerCost, '$')}`);
         }
 
         await ns.sleep(1000*5);

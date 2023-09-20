@@ -1,5 +1,5 @@
-import {scanAllNetwork, buildPath} from "./scan.js";
-import {buildHackingProgramList, countAvailablePrograms} from "./hacking-programs.js";
+import { scanAllNetwork, buildPath } from "./scan.js";
+import { buildHackingProgramList, countAvailablePrograms } from "./hacking-programs.js";
 
 /** @param {NS} ns */
 async function openPorts(ns, hackingPrograms, target) {
@@ -13,15 +13,9 @@ async function openPorts(ns, hackingPrograms, target) {
 
 /** @param {NS} ns */
 function launchScript(ns, script, server) {
-    ns.print(`script: ${script} on server ${server}`);
-
     const scriptRam = ns.getScriptRam(script);
     const availableRam = ns.getServerMaxRam(server) - ns.getServerUsedRam(server);
-    ns.print(`Available ram: ${availableRam}`);
-
     const scriptNumThreads = ~~(availableRam / scriptRam);
-
-    ns.print(`Script num threads: ${scriptNumThreads}`);
 
     if (scriptNumThreads>0) {
         ns.exec(script, server, scriptNumThreads);
@@ -30,11 +24,7 @@ function launchScript(ns, script, server) {
 
 /** @param {NS} ns */
 export async function main(ns) {
-    ns.disableLog('scan');
-    ns.disableLog('sleep');
-    ns.disableLog('getServerRequiredHackingLevel');
-    ns.disableLog('getServerNumPortsRequired');
-    ns.disableLog('getHackingLevel');
+    ns.disableLog('ALL');
 
     const replace = false;  // Replace an existing script
 
@@ -42,29 +32,27 @@ export async function main(ns) {
         const fullServerList = scanAllNetwork(ns, 'home');
         const filteredServerList = fullServerList.filter(name => !name.startsWith('neighbor-') && !name.startsWith('hacknet-') && name!='w0r1d_d43m0n');
 
-        ns.print(`Server list: ${filteredServerList}`)
-
         for (const server of filteredServerList) {
             ns.print(`Current server: ${server}`);
 
             const playerHackingLevel = ns.getHackingLevel();
             const hackingPrograms = buildHackingProgramList(ns);
-            const currentNumberOfPorts = countAvailablePrograms(ns, hackingPrograms);
+            const numberAvailablePrograms = countAvailablePrograms(ns, hackingPrograms);
 
             // Check server level vs player level
-            var machineHackingLevel = ns.getServerRequiredHackingLevel(server);
+            const machineHackingLevel = ns.getServerRequiredHackingLevel(server);
             ns.print(`Level player: ${playerHackingLevel}, level machine: ${machineHackingLevel}`);
 
             // Check number of ports required vs number of programs available
-            var requiredNumberOfPorts = ns.getServerNumPortsRequired(server);
-            ns.print(`Required num ports: ${requiredNumberOfPorts}, current num ports: ${currentNumberOfPorts}`);
+            const requiredNumberOfPorts = ns.getServerNumPortsRequired(server);
+            ns.print(`Required num ports: ${requiredNumberOfPorts}, number available programs: ${numberAvailablePrograms}`);
 
             if (playerHackingLevel<machineHackingLevel) {
                 ns.print('----------\n');
                 continue;
             }
 
-            if (currentNumberOfPorts<requiredNumberOfPorts) {
+            if (numberAvailablePrograms<requiredNumberOfPorts) {
                 ns.print('----------\n');
                 continue;
             }
@@ -87,7 +75,9 @@ export async function main(ns) {
                     };
                 }
 
+                ns.print('Installing backdoor');
                 await ns.singularity.installBackdoor();
+                ns.print('Backdoor installed');
 
                 for (let item of path.reverse()) {
                     if (!ns.singularity.connect(item)) {
