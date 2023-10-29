@@ -55,10 +55,10 @@ function findNextAction(ns) {
 /** @param {NS} ns */
 function upgradeBladeburnerSkills(ns) {
     const targetedSkills = ["Blade's Intuition", "Cloak", "Short-Circuit"];
-    const numberSkillPoints = ns.bladeburner.getSkillPoints();
 
     for (let skill of targetedSkills) {
         const skillCost = ns.bladeburner.getSkillUpgradeCost(skill);
+        const numberSkillPoints = ns.bladeburner.getSkillPoints();
         if (skillCost < numberSkillPoints) {
             ns.bladeburner.upgradeSkill(skill);
         }
