@@ -51,7 +51,7 @@ export async function main(ns) {
     while (true) {
 
         const r = Math.random();
-        if (r<0.3) {
+        if (r<0.1) {
             const target = selectRandomServer(ns);
             const minLevel = ns.getServerMinSecurityLevel(target);
             if (minLevel>1.0) {
@@ -59,7 +59,7 @@ export async function main(ns) {
                 const minLevelAfter = ns.getServerMinSecurityLevel(target);
                 ns.print(`Reduced minimum security level on ${target} from ${minLevel} to ${minLevelAfter}`);
             }
-        } else if (r<0.6) {
+        } else if (r<0.2) {
             const target = selectRandomServer(ns);
             const maxMoney = ns.getServerMaxMoney(target);
             if (maxMoney<ten_trillions) {

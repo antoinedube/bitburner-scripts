@@ -30,7 +30,7 @@ export async function main(ns) {
 
     while (true) {
         const fullServerList = scanAllNetwork(ns, 'home');
-        const filteredServerList = fullServerList.filter(name => !name.startsWith('neighbor-') && !name.startsWith('hacknet-') && name!='w0r1d_d43m0n');
+        const filteredServerList = fullServerList.filter(name => !name.startsWith('neighbor-') && !name.startsWith('hacknet-'));
 
         for (const server of filteredServerList) {
             ns.print(`Current server: ${server}`);
@@ -66,7 +66,7 @@ export async function main(ns) {
 
             const isBackdoorInstalled = ns.getServer(server).backdoorInstalled;
             ns.print(`isBackdoorInstalled: ${isBackdoorInstalled}`);
-            if (ns.hasRootAccess(server) && !isBackdoorInstalled) {
+            if (ns.hasRootAccess(server) && !isBackdoorInstalled && server!='w0r1d_d43m0n') {
                 const path = await buildPath(ns, server);
                 for (let item of path) {
                     // ns.print(`Connecting to ${item} from ${ns.singularity.getCurrentServer()}`);

@@ -25,6 +25,9 @@ function launchScript(ns, scriptName, server) {
 /** @param {NS} ns */
 export async function main(ns) {
     ns.disableLog('ALL');
+
+    await ns.sleep(15*1000);
+
     let targetRam = 4;
         while (targetRam<=ns.getPurchasedServerMaxRam()) {
             const maxNumberOfServers = ns.getPurchasedServerLimit();

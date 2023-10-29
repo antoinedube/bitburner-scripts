@@ -6,8 +6,7 @@ export async function main(ns) {
     const serverList = scanAllNetwork(ns);
     // const purchasedServers = serverList.filter(name => name.startsWith('neighbor-'));
     const purchasedServers = serverList.filter(name => {
-          name.startsWith('hacknet-server-')
-            && name!='w0r1d_d43m0n'
+          name.startsWith('hacknet-server-') && name!='w0r1d_d43m0n'
     });
 
     for (let server of purchasedServers) {
