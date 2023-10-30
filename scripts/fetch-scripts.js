@@ -21,6 +21,8 @@ export async function main(ns) {
         'list-server-prices.js',
         'list-server-security-level.js',
         'manage-gang.js',
+        'manage-sleeves.js',
+        'manage-bladeburner.js',
         'scan.js',
         'weaken-remote.js'
     ];

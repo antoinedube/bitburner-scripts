@@ -12,7 +12,7 @@ function findNextAction(ns) {
     const [currentStamina, maxStamina] = ns.bladeburner.getStamina();
     const playerRank = ns.bladeburner.getRank();
 
-    if (currentStamina < 0.75*maxStamina) {
+    if (currentStamina < 0.80*maxStamina) {
         return {
             'type': 'General',
             'name': lowStaminaTask
@@ -24,7 +24,7 @@ function findNextAction(ns) {
     if (nextBlackOp!=undefined) {
 
         const [lowerBound, _] = ns.bladeburner.getActionEstimatedSuccessChance('BlackOp', nextBlackOp);
-        if (0.8 < lowerBound && nextBlackOpRank <= playerRank && nextBlackOp!='Operation Daedalus') {
+        if (0.8 < lowerBound && nextBlackOpRank <= playerRank) {
             return {
                 'type': 'BlackOp',
                 'name': nextBlackOp
@@ -70,7 +70,7 @@ export async function main(ns) {
     ns.disableLog('sleep');
         const thirty_seconds = 30*1000;
 
-        if (!ns.bladeburner.inBladeburner()) {
+        while (!ns.bladeburner.inBladeburner()) {
             ns.print('Not in BladeBurner');
             await ns.sleep(thirty_seconds);
         }
