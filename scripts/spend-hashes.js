@@ -67,9 +67,9 @@ export async function main(ns) {
                 const maxMoneyAfter = ns.getServerMaxMoney(target);
                 ns.print(`Increased maximum money on ${target} from ${formatNumber(maxMoney, '$')} to ${formatNumber(maxMoneyAfter, '$')}`);
             }
-        } else if (r<0.4) {
+        } else if (r<0.3) {
             await spendHashesOnAction(ns, 'Exchange for Bladeburner Rank', 'home', 1);
-        } else if (r<0.6) {
+        } else if (r<0.4) {
             await spendHashesOnAction(ns, 'Exchange for Bladeburner SP', 'home', 1);
         } else {
             await spendHashesOnAction(ns, "Sell for Money", "target", 250);

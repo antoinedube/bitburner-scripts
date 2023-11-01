@@ -20,14 +20,14 @@ function findNextAction(ns) {
     }
 
     // BlackOps have a special structure
-    const { nextBlackOp, nextBlackOpRank } = ns.bladeburner.getNextBlackOp();
+    const nextBlackOp = ns.bladeburner.getNextBlackOp();
     if (nextBlackOp!=undefined) {
 
-        const [lowerBound, _] = ns.bladeburner.getActionEstimatedSuccessChance('BlackOp', nextBlackOp);
-        if (0.8 < lowerBound && nextBlackOpRank <= playerRank) {
+        const [lowerBound, _] = ns.bladeburner.getActionEstimatedSuccessChance('BlackOp', nextBlackOp['name']);
+        if (0.8 < lowerBound && nextBlackOp['rank'] <= playerRank) {
             return {
                 'type': 'BlackOp',
-                'name': nextBlackOp
+                'name': nextBlackOp['name']
             };
         }
     }
@@ -54,7 +54,7 @@ function findNextAction(ns) {
 
 /** @param {NS} ns */
 function upgradeBladeburnerSkills(ns) {
-    const targetedSkills = ["Blade's Intuition", "Cloak", "Short-Circuit"];
+    const targetedSkills = ["Blade's Intuition", "Cloak", "Short-Circuit", "Digital Observer", "Tracer", "Hyperdrive"];
 
     for (let skill of targetedSkills) {
         const skillCost = ns.bladeburner.getSkillUpgradeCost(skill);
