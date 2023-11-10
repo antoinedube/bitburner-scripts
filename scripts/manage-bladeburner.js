@@ -24,7 +24,7 @@ function findNextAction(ns) {
     if (nextBlackOp!=undefined) {
 
         const [lowerBound, _] = ns.bladeburner.getActionEstimatedSuccessChance('BlackOp', nextBlackOp['name']);
-        if (0.8 < lowerBound && nextBlackOp['rank'] <= playerRank) {
+        if (0.9 < lowerBound && nextBlackOp['rank'] <= playerRank) {
             return {
                 'type': 'BlackOp',
                 'name': nextBlackOp['name']
@@ -68,11 +68,11 @@ function upgradeBladeburnerSkills(ns) {
 /** @param {NS} ns */
 export async function main(ns) {
     ns.disableLog('sleep');
-        const thirty_seconds = 30*1000;
+        const ten_seconds = 10*1000;
 
         while (!ns.bladeburner.inBladeburner()) {
             ns.print('Not in BladeBurner');
-            await ns.sleep(thirty_seconds);
+            await ns.sleep(ten_seconds);
         }
 
         ns.print('Managing bladeburner');
@@ -81,7 +81,7 @@ export async function main(ns) {
             const currentAction = ns.bladeburner.getCurrentAction();
 
             if (currentAction['type']=='BlackOp') {  // Do not interrupt a BlackOp
-                await ns.sleep(thirty_seconds);
+                await ns.sleep(ten_seconds);
                 continue;
             }
 
@@ -94,6 +94,6 @@ export async function main(ns) {
             }
 
             upgradeBladeburnerSkills(ns);
-            await ns.sleep(thirty_seconds);
+            await ns.sleep(ten_seconds);
         }
 }

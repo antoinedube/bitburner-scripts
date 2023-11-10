@@ -72,7 +72,7 @@ export async function main(ns) {
         } else if (r<0.4) {
             await spendHashesOnAction(ns, 'Exchange for Bladeburner SP', 'home', 1);
         } else {
-            await spendHashesOnAction(ns, "Sell for Money", "target", 250);
+            await spendHashesOnAction(ns, "Sell for Money", "target", 1000);
         }
 
         await ns.sleep(250);
