@@ -54,7 +54,15 @@ function findNextAction(ns) {
 
 /** @param {NS} ns */
 function upgradeBladeburnerSkills(ns) {
-    const targetedSkills = ["Blade's Intuition", "Cloak", "Short-Circuit", "Digital Observer", "Tracer", "Hyperdrive"];
+    const targetedSkills = [
+        "Blade's Intuition",
+        "Cloak",
+        "Short-Circuit",
+        "Digital Observer",
+        "Tracer",
+        "Hyperdrive",
+        "Hands of Midas"
+    ];
 
     for (let skill of targetedSkills) {
         const skillCost = ns.bladeburner.getSkillUpgradeCost(skill);
