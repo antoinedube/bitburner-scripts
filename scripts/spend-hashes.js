@@ -68,11 +68,17 @@ export async function main(ns) {
                 ns.print(`Increased maximum money on ${target} from ${formatNumber(maxMoney, '$')} to ${formatNumber(maxMoneyAfter, '$')}`);
             }
         } else if (r<0.3) {
-            await spendHashesOnAction(ns, 'Exchange for Bladeburner Rank', 'home', 1);
+            if (ns.bladeburner.inBladeburner()) {
+                await spendHashesOnAction(ns, 'Exchange for Bladeburner Rank', 'home', 1);
+            }
         } else if (r<0.4) {
-            await spendHashesOnAction(ns, 'Exchange for Bladeburner SP', 'home', 1);
-        } else {
-            await spendHashesOnAction(ns, "Sell for Money", "target", 1000);
+            if (ns.bladeburner.inBladeburner()) {
+              await spendHashesOnAction(ns, 'Exchange for Bladeburner SP', 'home', 1);
+            }
+        } else if (r<0.5) {
+            await spendHashesOnAction(ns, 'Improve Studying', 'home', 5);
+        }else {
+            await spendHashesOnAction(ns, "Sell for Money", "target", 2500);
         }
 
         await ns.sleep(250);

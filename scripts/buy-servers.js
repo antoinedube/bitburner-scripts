@@ -25,8 +25,9 @@ function launchScript(ns, scriptName, server) {
 /** @param {NS} ns */
 export async function main(ns) {
     ns.disableLog('ALL');
+    const fifteen_seconds = 15*1000;
 
-    await ns.sleep(15*1000);
+    await ns.sleep(fifteen_seconds);
 
     let targetRam = 4;
         while (targetRam<=ns.getPurchasedServerMaxRam()) {
@@ -96,6 +97,6 @@ export async function main(ns) {
             ns.print(`Target RAM: ${targetRam}\tcost: ${formatNumber(newServerCost, '$')}`);
         }
 
-        await ns.sleep(1000*5);
+        await ns.sleep(fifteen_seconds);
     }
 }

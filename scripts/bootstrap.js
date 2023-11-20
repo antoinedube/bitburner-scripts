@@ -28,7 +28,9 @@ export async function main(ns) {
     const scriptNumThreads = ~~(availableRam / scriptRam);
 
     if (scriptNumThreads>0) {
-              ns.tprint(`Launching script: ${hackingScript} with ${scriptNumThreads} threads`);
+        ns.tprint(`Launching script: ${hackingScript} with ${scriptNumThreads} threads`);
         ns.exec(hackingScript, 'home', scriptNumThreads);
     }
+
+    ns.singularity.universityCourse('Rothman University', 'Algorithms');
 }
