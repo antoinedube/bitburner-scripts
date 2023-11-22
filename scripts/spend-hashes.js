@@ -47,14 +47,14 @@ export async function main(ns) {
     */
 
     const ten_trillions = 10*1000*1000*1000*1000;  // k -> m -> g -> t
+    const low_high_hack_exp_limit = 1500;
 
     while (true) {
-
         const r = Math.random();
         if (r<0.1) {
             const target = selectRandomServer(ns);
             const minLevel = ns.getServerMinSecurityLevel(target);
-            if (minLevel>1.0) {
+            if (minLevel>1.0 && ns.getHackingLevel()>low_high_hack_exp_limit) {
                 await spendHashesOnAction(ns, "Reduce Minimum Security", target, 1);
                 const minLevelAfter = ns.getServerMinSecurityLevel(target);
                 ns.print(`Reduced minimum security level on ${target} from ${minLevel} to ${minLevelAfter}`);
@@ -62,7 +62,7 @@ export async function main(ns) {
         } else if (r<0.2) {
             const target = selectRandomServer(ns);
             const maxMoney = ns.getServerMaxMoney(target);
-            if (maxMoney<ten_trillions) {
+            if (maxMoney<ten_trillions && ns.getHackingLevel()>low_high_hack_exp_limit) {
                 await spendHashesOnAction(ns, "Increase Maximum Money", target, 1);
                 const maxMoneyAfter = ns.getServerMaxMoney(target);
                 ns.print(`Increased maximum money on ${target} from ${formatNumber(maxMoney, '$')} to ${formatNumber(maxMoneyAfter, '$')}`);
@@ -76,8 +76,10 @@ export async function main(ns) {
               await spendHashesOnAction(ns, 'Exchange for Bladeburner SP', 'home', 1);
             }
         } else if (r<0.5) {
-            await spendHashesOnAction(ns, 'Improve Studying', 'home', 5);
-        }else {
+            if (ns.getHackingLevel()<=low_high_hack_exp_limit) {
+                await spendHashesOnAction(ns, 'Improve Studying', 'home', 25);
+            }
+        } else {
             await spendHashesOnAction(ns, "Sell for Money", "target", 2500);
         }
 

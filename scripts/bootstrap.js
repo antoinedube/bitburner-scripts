@@ -1,9 +1,10 @@
 /** @param {NS} ns */
 export async function main(ns) {
-    const scripts = ['launch-hacking.js', 'spend-hashes.js',
-                    /*'buy-hacknet-nodes.js', */'buy-servers.js',
-                     'manage-sleeves.js', 'manage-gang.js',
-                     'manage-bladeburner.js'];
+    const scripts = [
+        'launch-hacking.js', 'spend-hashes.js',
+        'buy-servers.js', 'manage-sleeves.js',
+        'manage-gang.js', 'manage-bladeburner.js'
+    ];
 
     if (ns.isRunning('hack-remote.js')) {
         ns.kill('hack-remote.js', 'home');
@@ -32,5 +33,7 @@ export async function main(ns) {
         ns.exec(hackingScript, 'home', scriptNumThreads);
     }
 
-    ns.singularity.universityCourse('Rothman University', 'Algorithms');
+    if (!ns.bladeburner.inBladeburner()) {
+        ns.singularity.universityCourse('Rothman University', 'Algorithms');
+    }
 }
