@@ -30,24 +30,24 @@ export async function main(ns) {
     await ns.sleep(fifteen_seconds);
 
     let targetRam = 4;
-        while (targetRam<=ns.getPurchasedServerMaxRam()) {
-            const maxNumberOfServers = ns.getPurchasedServerLimit();
-            const availableMoney = ns.getServerMoneyAvailable('home');
-            const serverCost = ns.getPurchasedServerCost(targetRam);
+    while (targetRam<=ns.getPurchasedServerMaxRam()) {
+        const maxNumberOfServers = ns.getPurchasedServerLimit();
+        const availableMoney = ns.getServerMoneyAvailable('home');
+        const serverCost = ns.getPurchasedServerCost(targetRam);
 
-            if (availableMoney < maxNumberOfServers*serverCost) {
+        if (availableMoney < maxNumberOfServers*serverCost) {
                 targetRam /= 2;
                 break;
-            }
-
-            targetRam *= 2;
         }
 
-        if (targetRam<8) {
-            targetRam = 8;
-        }
+        targetRam *= 2;
+    }
 
-        ns.print(`Starting target ram: ${targetRam}`);
+    if (targetRam<8) {
+        targetRam = 8;
+    }
+
+    ns.print(`Starting target ram: ${targetRam}`);
 
     while (targetRam<=ns.getPurchasedServerMaxRam()) {
         const serverList = scanAllNetwork(ns);
@@ -59,10 +59,10 @@ export async function main(ns) {
 
         let index = purchasedServersRam.length;
         while (purchasedServersRam.length<ns.getPurchasedServerLimit()) {
-                const name = `neighbor-${index}`;
-                const item = { "name": name, "maxRam": 0 };
-                purchasedServersRam.push(item);
-                index++;
+            const name = `neighbor-${index}`;
+            const item = { "name": name, "maxRam": 0 };
+            purchasedServersRam.push(item);
+            index++;
         }
 
         let countServerWithTargetRam = 0;

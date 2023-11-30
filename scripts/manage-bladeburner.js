@@ -61,8 +61,7 @@ function upgradeBladeburnerSkills(ns) {
         "Digital Observer",
         "Tracer",
         "Hyperdrive",
-        "Hands of Midas",
-        "Overclock"
+        "Hands of Midas"
     ];
 
     for (let skill of targetedSkills) {
@@ -77,27 +76,27 @@ function upgradeBladeburnerSkills(ns) {
 /** @param {NS} ns */
 export async function main(ns) {
     ns.disableLog('sleep');
-    const ten_seconds = 10*1000;
+        const ten_seconds = 10*1000;
 
-    while (!ns.bladeburner.inBladeburner()) {
-        ns.print('Not in BladeBurner');
-        await ns.sleep(ten_seconds);
-    }
-
-    ns.print('Managing bladeburner');
-
-    while (true) {
-        const currentAction = ns.bladeburner.getCurrentAction();
-
-        const newAction = findNextAction(ns);
-        if (currentAction['type']!=newAction['type'] || currentAction['name']!=newAction['name']) {
-            const result = ns.bladeburner.startAction(newAction['type'], newAction['name']);
-            if (!result) {
-                ns.print(`Unable to start action: ${JSON.stringify(newAction)}`);
-            }
+        while (!ns.bladeburner.inBladeburner()) {
+            ns.print('Not in BladeBurner');
+            await ns.sleep(ten_seconds);
         }
 
-        upgradeBladeburnerSkills(ns);
-        await ns.sleep(ten_seconds);
-    }
+        ns.print('Managing bladeburner');
+
+        while (true) {
+            const currentAction = ns.bladeburner.getCurrentAction();
+
+            const newAction = findNextAction(ns);
+            if (currentAction['type']!=newAction['type'] || currentAction['name']!=newAction['name']) {
+                const result = ns.bladeburner.startAction(newAction['type'], newAction['name']);
+                if (!result) {
+                    ns.print(`Unable to start action: ${JSON.stringify(newAction)}`);
+                }
+            }
+
+            upgradeBladeburnerSkills(ns);
+            await ns.sleep(ten_seconds);
+        }
 }

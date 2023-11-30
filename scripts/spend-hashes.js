@@ -47,7 +47,11 @@ export async function main(ns) {
     */
 
     const ten_trillions = 10*1000*1000*1000*1000;  // k -> m -> g -> t
-    const low_high_hack_exp_limit = 1000;
+    const low_high_hack_exp_limit = 1500;
+
+    for (let i=0 ; i<10 ; i++) {
+        await spendHashesOnAction(ns, 'Improve Studying', 'home', 10);
+    }
 
     while (true) {
         const r = Math.random();
@@ -74,10 +78,6 @@ export async function main(ns) {
         } else if (r<0.4) {
             if (ns.bladeburner.inBladeburner()) {
               await spendHashesOnAction(ns, 'Exchange for Bladeburner SP', 'home', 1);
-            }
-        } else if (r<0.5) {
-            if (ns.getHackingLevel()<=low_high_hack_exp_limit) {
-                await spendHashesOnAction(ns, 'Improve Studying', 'home', 25);
             }
         } else {
             await spendHashesOnAction(ns, "Sell for Money", "target", 2500);
