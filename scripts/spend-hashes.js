@@ -47,7 +47,7 @@ export async function main(ns) {
     */
 
     const ten_trillions = 10*1000*1000*1000*1000;  // k -> m -> g -> t
-    const low_high_hack_exp_limit = 1500;
+    const low_high_hack_exp_limit = 1000;
 
     while (true) {
         const r = Math.random();
