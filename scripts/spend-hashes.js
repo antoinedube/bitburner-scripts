@@ -49,8 +49,9 @@ export async function main(ns) {
     const ten_trillions = 10*1000*1000*1000*1000;  // k -> m -> g -> t
     const low_high_hack_exp_limit = 1500;
 
-    for (let i=0 ; i<10 ; i++) {
-        await spendHashesOnAction(ns, 'Improve Studying', 'home', 10);
+    for (let i=0 ; i<100 ; i++) {
+        ns.tprint(`--> ${i} of 100`);
+        await spendHashesOnAction(ns, 'Improve Studying', 'home', 1);
     }
 
     while (true) {
