@@ -50,7 +50,7 @@ export async function main(ns) {
     const low_high_hack_exp_limit = 1500;
 
     for (let i=0 ; i<100 ; i++) {
-        ns.tprint(`--> ${i} of 100`);
+        ns.print(`--> ${i} of 100`);
         await spendHashesOnAction(ns, 'Improve Studying', 'home', 1);
     }
 

@@ -60,6 +60,10 @@ export async function main(ns) {
             if (!ns.hasRootAccess(server)) {
                 await openPorts(ns, hackingPrograms, server);
                 ns.nuke(server);
+
+                if (server=='w0r1d_d43m0n') {
+                      ns.tprint('w0r1d_d43m0n is now root-accessible');
+                }
             }
 
             ns.print(`hasRootAccess: ${ns.hasRootAccess(server)}`);
