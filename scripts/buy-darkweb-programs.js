@@ -1,26 +1,42 @@
 /** @param {NS} ns */
 export async function main(ns) {
-    ns.print('Starting buy-darkweb-programs');
+	ns.disableLog('ALL');
+	const SLEEP_DELAY = 15000;  // in milliseconds
+	const HOME_SERVER = 'home';
+	const TOR_ROUTER_PRICE = 200000;
 
-    while (!ns.singularity.purchaseTor()) {  // https://github.com/danielyxie/bitburner/blob/dev/markdown/bitburner.singularity.purchasetor.md
-        await ns.sleep(1000*30);
-    }
+	while (!ns.hasTorRouter()) {
+		const moneyAvailable = ns.getServerMoneyAvailable(HOME_SERVER);
 
-    const programList = ns.singularity.getDarkwebPrograms(); // https://github.com/danielyxie/bitburner/blob/dev/markdown/bitburner.singularity.getdarkwebprograms.md
-    ns.print(`Program list: ${programList}`);
-    /*
-    for (let program of programList) {
-        if (ns.fileExists(program, 'home')) {
-            ns.print(`${program} exists on 'home'`);
-            continue;
-        }
+		if (TOR_ROUTER_PRICE <= moneyAvailable) {
+			if (ns.singularity.purchaseTor()) {
+				ns.print('TOR router purchased');
+			}
+		}
 
-        const availableMoney = ns.getServerMoneyAvailable('home');
-        const programCost = ns.singularity.getDarkwebProgramCost(program);
-        ns.print(`Available money: ${availableMoney}, cost of ${program}: ${programCost}`);
-        if (programCost<=availableMoney) {
-            ns.print(`Buying: ${program}`);
-            ns.singularity.purchaseProgram(program);
-        }
-    }*/
+		await ns.sleep(SLEEP_DELAY);
+	}
+
+	while (true) {
+		const allHackingPrograms = ns.singularity.getDarkwebPrograms();
+		const purchasedHackingPrograms = allHackingPrograms.filter((program) => ns.fileExists(program));
+		const hackingProgramsToPurchase = allHackingPrograms.filter((program) => !ns.fileExists(program));
+
+		if (purchasedHackingPrograms.length == allHackingPrograms.length) {
+			break;
+		}
+
+		for (const program of hackingProgramsToPurchase) {
+			const programCost = ns.singularity.getDarkwebProgramCost(program);
+			const moneyAvailable = ns.getServerMoneyAvailable(HOME_SERVER);
+
+			if (programCost <= moneyAvailable) {
+				if (ns.singularity.purchaseProgram(program)) {
+					ns.print(`Purchased ${program}`);
+				}
+			}
+		}
+
+		await ns.sleep(SLEEP_DELAY);
+	}
 }
