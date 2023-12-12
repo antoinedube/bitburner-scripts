@@ -32,6 +32,7 @@ export async function main(ns) {
     ns.disableLog('ALL');
     const BUYING_DELAY = 250;
     const UPGRADING_DELAY = 5 * 1000;
+    const FOLLOWING_BATCH_DELAY = 1000*60*5;
     const HOME_SERVER = 'home';
 
     let targetRam = 4;
@@ -97,6 +98,8 @@ export async function main(ns) {
             }
 
             targetRam *= 2;
+
+            await ns.sleep(FOLLOWING_BATCH_DELAY);
         }
 
         for (const purchasedServer of purchasedServers) {
