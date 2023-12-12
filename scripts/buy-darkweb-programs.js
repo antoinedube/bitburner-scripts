@@ -1,42 +1,46 @@
 /** @param {NS} ns */
 export async function main(ns) {
-	ns.disableLog('ALL');
-	const SLEEP_DELAY = 15000;  // in milliseconds
-	const HOME_SERVER = 'home';
-	const TOR_ROUTER_PRICE = 200000;
+    ns.disableLog('ALL');
+    const SLEEP_DELAY = 15000;  // in milliseconds
+    const HOME_SERVER = 'home';
+    const TOR_ROUTER_PRICE = 200000;
 
-	while (!ns.hasTorRouter()) {
-		const moneyAvailable = ns.getServerMoneyAvailable(HOME_SERVER);
+    if (!ns.hasTorRouter()) {
+        ns.print('TOR router not purchased yet');
+    }
 
-		if (TOR_ROUTER_PRICE <= moneyAvailable) {
-			if (ns.singularity.purchaseTor()) {
-				ns.print('TOR router purchased');
-			}
-		}
+    while (!ns.hasTorRouter()) {
+        const moneyAvailable = ns.getServerMoneyAvailable(HOME_SERVER);
 
-		await ns.sleep(SLEEP_DELAY);
-	}
+        if (TOR_ROUTER_PRICE <= moneyAvailable) {
+            if (ns.singularity.purchaseTor()) {
+                ns.print('TOR router purchased');
+            }
+        }
 
-	while (true) {
-		const allHackingPrograms = ns.singularity.getDarkwebPrograms();
-		const purchasedHackingPrograms = allHackingPrograms.filter((program) => ns.fileExists(program));
-		const hackingProgramsToPurchase = allHackingPrograms.filter((program) => !ns.fileExists(program));
+        await ns.sleep(SLEEP_DELAY);
+    }
 
-		if (purchasedHackingPrograms.length == allHackingPrograms.length) {
-			break;
-		}
+    while (true) {
+        const allHackingPrograms = ns.singularity.getDarkwebPrograms();
+        const purchasedHackingPrograms = allHackingPrograms.filter((program) => ns.fileExists(program));
+        const hackingProgramsToPurchase = allHackingPrograms.filter((program) => !ns.fileExists(program));
 
-		for (const program of hackingProgramsToPurchase) {
-			const programCost = ns.singularity.getDarkwebProgramCost(program);
-			const moneyAvailable = ns.getServerMoneyAvailable(HOME_SERVER);
+        if (purchasedHackingPrograms.length == allHackingPrograms.length) {
+            break;
+        }
 
-			if (programCost <= moneyAvailable) {
-				if (ns.singularity.purchaseProgram(program)) {
-					ns.print(`Purchased ${program}`);
-				}
-			}
-		}
+        for (const program of hackingProgramsToPurchase) {
+            const programCost = ns.singularity.getDarkwebProgramCost(program);
+            const moneyAvailable = ns.getServerMoneyAvailable(HOME_SERVER);
 
-		await ns.sleep(SLEEP_DELAY);
-	}
+            if (programCost <= moneyAvailable) {
+                if (ns.singularity.purchaseProgram(program)) {
+                    ns.print(`Purchased ${program}`);
+                }
+            }
+        }
+
+        await ns.sleep(SLEEP_DELAY);
+    }
 }

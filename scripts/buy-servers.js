@@ -1,101 +1,120 @@
 import { scanAllNetwork } from "./scan";
 
+function generateUUID() {
+    // https://stackoverflow.com/questions/105034/how-do-i-create-a-guid-uuid
+    // crypto.randomUUID();
+    // crypto.getRandomValues();
+}
+
 /** @param {NS} ns */
 function launchScript(ns, scriptName, server) {
-	const scpStatus = ns.scp(scriptName, server, 'home');
-	if (!scpStatus) {
-		ns.print('Failed to copy ' + scriptName + ' on ' + server);
-	}
+    const scpStatus = ns.scp(scriptName, server, 'home');
+    if (!scpStatus) {
+        ns.print('Failed to copy ' + scriptName + ' on ' + server);
+    }
 
-	ns.killall(server);
+    ns.killall(server);
 
-	const maxRam = ns.getServerMaxRam(server);
-	const usedRam = ns.getServerUsedRam(server);
-	const availableRam = maxRam - usedRam;
-	const scriptRam = ns.getScriptRam(scriptName, server);
-	const numThreads = Math.floor(availableRam / scriptRam);
-	if (numThreads > 0) {
-		if (ns.exec(scriptName, server, numThreads) == 0) {
-			ns.print('Error launching script');
-		}
-	}
+    const maxRam = ns.getServerMaxRam(server);
+    const usedRam = ns.getServerUsedRam(server);
+    const availableRam = maxRam - usedRam;
+    const scriptRam = ns.getScriptRam(scriptName, server);
+    const numThreads = Math.floor(availableRam / scriptRam);
+    if (numThreads > 0) {
+        if (ns.exec(scriptName, server, numThreads) == 0) {
+            ns.print('Error launching script');
+        }
+    }
 }
 
 /** @param {NS} ns */
 export async function main(ns) {
-	ns.disableLog('ALL');
-	const fifteen_seconds = 15 * 1000;
+    ns.disableLog('ALL');
+    const BUYING_DELAY = 250;
+    const UPGRADING_DELAY = 5 * 1000;
+    const HOME_SERVER = 'home';
 
-	await ns.sleep(fifteen_seconds);
+    let targetRam = 4;
+    while (targetRam <= ns.getPurchasedServerMaxRam()) {
+        const maxNumberOfServers = ns.getPurchasedServerLimit();
+        const availableMoney = ns.getServerMoneyAvailable('home');
+        const serverCost = ns.getPurchasedServerCost(targetRam);
 
-	let targetRam = 4;
-	while (targetRam <= ns.getPurchasedServerMaxRam()) {
-		const maxNumberOfServers = ns.getPurchasedServerLimit();
-		const availableMoney = ns.getServerMoneyAvailable('home');
-		const serverCost = ns.getPurchasedServerCost(targetRam);
+        if (availableMoney < maxNumberOfServers * serverCost) {
+            targetRam /= 2;
+            break;
+        }
 
-		if (availableMoney < maxNumberOfServers * serverCost) {
-			targetRam /= 2;
-			break;
-		}
+        targetRam *= 2;
+    }
 
-		targetRam *= 2;
-	}
+    if (targetRam < 8) {
+        targetRam = 8;
+    }
 
-	if (targetRam < 8) {
-		targetRam = 8;
-	}
+    ns.print(`Starting target ram: ${targetRam}`);
 
-	ns.print(`Starting target ram: ${targetRam}`);
+    // Purchase missing servers
+    while (true) {
+        // List current servers
+        const serverList = scanAllNetwork(ns);
+        let purchasedServers = serverList.filter(name => name.startsWith('neighbor-'));
 
-	while (targetRam <= ns.getPurchasedServerMaxRam()) {
-		const serverList = scanAllNetwork(ns);
-		const purchasedServers = serverList.filter(name => name.startsWith('neighbor-'));
+        // Stopping criteria
+        if (purchasedServers.length == ns.getPurchasedServerLimit()) {
+            break;
+        }
 
-		let purchasedServersRam = purchasedServers.sort().map(name => {
-			return { "name": name, "maxRam": ns.getServerMaxRam(name) };
-		});
+        // If limit is not reached, buy server at current targetRam
+        if (ns.getPurchasedServerCost(targetRam) < ns.getServerMoneyAvailable(HOME_SERVER)) {
+            const name = `neighbor-${purchasedServers.length}`;
+            ns.print(`Purchasing server ${name}`);
+            ns.purchaseServer(name, targetRam);
+            purchasedServers.push(name);
+        }
 
-		let index = purchasedServersRam.length;
-		while (purchasedServersRam.length < ns.getPurchasedServerLimit()) {
-			const name = `neighbor-${index}`;
-			const item = { "name": name, "maxRam": 0 };
-			purchasedServersRam.push(item);
-			index++;
-		}
+        await ns.sleep(BUYING_DELAY);
+    }
 
-		let countServerWithTargetRam = 0;
-		for (let purchasedServer of purchasedServersRam) {
-			if (purchasedServer.maxRam >= targetRam) {
-				countServerWithTargetRam++;
-			}
-		}
+    const purchasedServers = scanAllNetwork(ns).filter(name => name.startsWith('neighbor-'));
+    ns.print(`Purchased servers: ${purchasedServers}`);
 
-		const newServerCost = ns.getPurchasedServerCost(targetRam);
-		for (let purchasedServer of purchasedServersRam) {
-			const availableMoney = ns.getServerMoneyAvailable('home');
+    targetRam *= 2;
+    while (true) {
+        // Stopping criteria
+        let countServerWithTargetRam = 0;
+        for (const purchasedServer of purchasedServers) {
+            const purchasedServerRam = ns.getServer(purchasedServer).maxRam;
+            if (purchasedServerRam >= targetRam) {
+                countServerWithTargetRam++;
+            }
+        }
 
-			if (purchasedServer.maxRam < targetRam && newServerCost <= availableMoney) {
-				if (ns.serverExists(purchasedServer.name)) {
-					ns.killall(purchasedServer.name);
-					ns.deleteServer(purchasedServer.name);
-				}
+        ns.print(`Number of servers at target (target: ${ns.formatRam(targetRam)} / max: ${ns.formatRam(ns.getPurchasedServerMaxRam())}): ${countServerWithTargetRam} vs ${ns.getPurchasedServerLimit()}`);
+        if (countServerWithTargetRam == ns.getPurchasedServerLimit()) {
+            if (targetRam >= ns.getPurchasedServerMaxRam()) {
+                break;
+            }
 
-				ns.purchaseServer(purchasedServer.name, targetRam);
-				ns.print(`Purchased server ${purchasedServer.name} with ${targetRam} RAM for ${ns.formatNumber(newServerCost)}\$`);
+            targetRam *= 2;
+        }
 
-				launchScript(ns, 'hack-remote.js', purchasedServer.name);
-			}
+        for (const purchasedServer of purchasedServers) {
+            const purchasedServerRam = ns.getServer(purchasedServer).maxRam;
+            if (purchasedServerRam < targetRam) {
+                const moneyAvailable = ns.getServerMoneyAvailable('home');
+                const upgradeCost = ns.getPurchasedServerUpgradeCost(purchasedServer, targetRam);
+                if (upgradeCost < moneyAvailable) {
+                    if (ns.upgradePurchasedServer(purchasedServer, targetRam)) {
+                        ns.print(`Upgraded ${purchasedServer} to ${targetRam}Gb with cost of ${ns.formatNumber(upgradeCost)}\$`);
+                        launchScript(ns, 'hack-remote.js', purchasedServer);
+                    } else {
+                        ns.print(`Error while upgrading purchased server ${purchasedServer} to ${targetRam}Gb`);
+                    }
+                }
+            }
+        }
 
-			await ns.sleep(250);
-		}
-
-		if (countServerWithTargetRam == ns.getPurchasedServerLimit()) {
-			targetRam *= 2;
-			const newServerCost = ns.getPurchasedServerCost(targetRam);
-			ns.print(`Target RAM: ${targetRam}\tcost: ${ns.formatNumber(newServerCost)}\$`);
-		}
-
-		await ns.sleep(fifteen_seconds);
-	}
+        await ns.sleep(UPGRADING_DELAY);
+    }
 }
