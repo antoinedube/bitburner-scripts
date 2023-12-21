@@ -47,7 +47,7 @@ export async function main(ns) {
   const low_high_hack_exp_limit = 1500;
 
   for (let i = 0; i < 5; i++) {
-    ns.print(`--> Improve studying ${i} of 5`);
+    ns.print(`--> Improve studying ${i + 1} of 5`);
     await spendHashesOnAction(ns, 'Improve Studying', 'home', 1);
   }
 
@@ -80,7 +80,7 @@ export async function main(ns) {
               }
       */
     } else {
-      await spendHashesOnAction(ns, "Sell for Money", "target", 25);
+      await spendHashesOnAction(ns, "Sell for Money", "target", 5);
       ns.print(`Sold hashes for money`);
     }
 
