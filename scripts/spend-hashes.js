@@ -13,7 +13,7 @@ async function spendHashesOnAction(ns, action, target, amount) {
 
 /** @param {NS} ns */
 function selectRandomServer(ns) {
-  const serversToAvoid = ['CSEC', 'I.I.I.I', 'run4theh111z', 'avmnite-02h', 'The-Cave', 'w0r1d_d43m0n'];
+  const serversToAvoid = ['CSEC', 'I.I.I.I', 'run4theh111z', 'avmnite-02h', '.', 'The-Cave', 'w0r1d_d43m0n'];
 
   const fullServerList = scanAllNetwork(ns, 'home');
   const filteredServerList = fullServerList.filter(name => !name.startsWith('neighbor-') && !name.startsWith('hacknet-') && !serversToAvoid.includes(name));
