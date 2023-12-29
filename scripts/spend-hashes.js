@@ -13,7 +13,7 @@ async function spendHashesOnAction(ns, action, target, amount) {
 
 /** @param {NS} ns */
 function selectRandomServer(ns) {
-  const serversToAvoid = ['CSEC', 'I.I.I.I', 'run4theh111z', 'avmnite-02h', '.', 'The-Cave', 'w0r1d_d43m0n'];
+  const serversToAvoid = ['CSEC', 'I.I.I.I', 'run4theh111z', 'avmnite-02h', '.', 'darkweb', 'The-Cave', 'w0r1d_d43m0n'];
 
   const fullServerList = scanAllNetwork(ns, 'home');
   const filteredServerList = fullServerList.filter(name => !name.startsWith('neighbor-') && !name.startsWith('hacknet-') && !serversToAvoid.includes(name));
@@ -26,21 +26,21 @@ export async function main(ns) {
   ns.disableLog('ALL');
 
   /*
-          const upgrades = ns.hacknet.getHashUpgrades();
+      const upgrades = ns.hacknet.getHashUpgrades();
 
-          [
-                          "Sell for Money",
-                          "Sell for Corporation Funds",
-                          "Reduce Minimum Security",
-                          "Increase Maximum Money",
-                          "Improve Studying",
-                          "Improve Gym Training",
-                          "Exchange for Corporation Research",
-                          "Exchange for Bladeburner Rank",
-                          "Exchange for Bladeburner SP",
-                          "Generate Coding Contract",
-                          "Company Favor"
-          ]
+      [
+          "Sell for Money",
+          "Sell for Corporation Funds",
+          "Reduce Minimum Security",
+          "Increase Maximum Money",
+          "Improve Studying",
+          "Improve Gym Training",
+          "Exchange for Corporation Research",
+          "Exchange for Bladeburner Rank",
+          "Exchange for Bladeburner SP",
+          "Generate Coding Contract",
+          "Company Favor"
+      ]
   */
 
   const ten_trillions = 10 * 1000 * 1000 * 1000 * 1000;  // k -> m -> g -> t
