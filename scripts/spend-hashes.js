@@ -1,4 +1,4 @@
-import { scanAllNetwork } from "./scan.js";
+import { scanAllNetwork, serversToAvoid } from "./scan.js";
 
 /** @param {NS} ns */
 async function spendHashesOnAction(ns, action, target, amount) {
@@ -13,8 +13,6 @@ async function spendHashesOnAction(ns, action, target, amount) {
 
 /** @param {NS} ns */
 function selectRandomServer(ns) {
-  const serversToAvoid = ['CSEC', 'I.I.I.I', 'run4theh111z', 'avmnite-02h', '.', 'darkweb', 'The-Cave', 'w0r1d_d43m0n'];
-
   const fullServerList = scanAllNetwork(ns, 'home');
   const filteredServerList = fullServerList.filter(name => !name.startsWith('neighbor-') && !name.startsWith('hacknet-') && !serversToAvoid.includes(name));
   const serverIndex = Math.floor(Math.random() * filteredServerList.length);
