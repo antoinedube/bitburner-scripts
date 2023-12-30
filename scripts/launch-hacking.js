@@ -70,7 +70,7 @@ export async function main(ns) {
 
       const isBackdoorInstalled = ns.getServer(server).backdoorInstalled;
       ns.print(`isBackdoorInstalled: ${isBackdoorInstalled}`);
-      if (ns.hasRootAccess(server) && !isBackdoorInstalled && server!='w0r1d_d43m0n') {
+      if (ns.hasRootAccess(server) && !isBackdoorInstalled && server != 'w0r1d_d43m0n') {
         const path = await buildPath(ns, server);
         for (let item of path) {
           // ns.print(`Connecting to ${item} from ${ns.singularity.getCurrentServer()}`);

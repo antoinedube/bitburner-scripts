@@ -1,5 +1,3 @@
-export const serversToAvoid = ['CSEC', 'I.I.I.I', 'run4theh111z', 'avmnite-02h', '.', 'darkweb', 'The-Cave', 'w0r1d_d43m0n'];
-
 /** @param {NS} ns */
 export function scanAllNetwork(ns) {
   let serversToScan = ['home'];

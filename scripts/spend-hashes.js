@@ -1,4 +1,4 @@
-import { scanAllNetwork, serversToAvoid } from "./scan.js";
+import { scanAllNetwork } from "./scan.js";
 
 /** @param {NS} ns */
 async function spendHashesOnAction(ns, action, target, amount) {
@@ -13,6 +13,8 @@ async function spendHashesOnAction(ns, action, target, amount) {
 
 /** @param {NS} ns */
 function selectRandomServer(ns) {
+  const serversToAvoid = ['CSEC', 'I.I.I.I', 'run4theh111z', 'avmnite-02h', '.', 'darkweb', 'The-Cave', 'w0r1d_d43m0n'];
+
   const fullServerList = scanAllNetwork(ns, 'home');
   const filteredServerList = fullServerList.filter(name => !name.startsWith('neighbor-') && !name.startsWith('hacknet-') && !serversToAvoid.includes(name));
   const serverIndex = Math.floor(Math.random() * filteredServerList.length);
@@ -24,45 +26,44 @@ export async function main(ns) {
   ns.disableLog('ALL');
 
   /*
-      const upgrades = ns.hacknet.getHashUpgrades();
+    const upgrades = ns.hacknet.getHashUpgrades();
 
-      [
-          "Sell for Money",
-          "Sell for Corporation Funds",
-          "Reduce Minimum Security",
-          "Increase Maximum Money",
-          "Improve Studying",
-          "Improve Gym Training",
-          "Exchange for Corporation Research",
-          "Exchange for Bladeburner Rank",
-          "Exchange for Bladeburner SP",
-          "Generate Coding Contract",
-          "Company Favor"
-      ]
+    [
+      "Sell for Money",
+      "Sell for Corporation Funds",
+      "Reduce Minimum Security",
+      "Increase Maximum Money",
+      "Improve Studying",
+      "Improve Gym Training",
+      "Exchange for Corporation Research",
+      "Exchange for Bladeburner Rank",
+      "Exchange for Bladeburner SP",
+      "Generate Coding Contract",
+      "Company Favor"
+    ]
   */
 
   const ten_trillions = 10 * 1000 * 1000 * 1000 * 1000;  // k -> m -> g -> t
-  const low_high_hack_exp_limit = 1500;
 
-  for (let i = 0; i < 5; i++) {
-    ns.print(`--> Improve studying ${i + 1} of 5`);
-    await spendHashesOnAction(ns, 'Improve Studying', 'home', 1);
+  for (let i = 0; i < 25; i++) {
+    ns.print(`--> Improve studying ${i + 1} of 25`);
+    await spendHashesOnAction(ns, 'Improve Studying', 'home', 5);
   }
 
   while (true) {
     const r = Math.random();
-    if (r < 0.1) {
+    if (r < 0.3) {
       const target = selectRandomServer(ns);
       const minLevel = ns.getServerMinSecurityLevel(target);
-      if (minLevel > 1.0 && ns.getHackingLevel() > low_high_hack_exp_limit) {
+      if (minLevel > 1.0) {
         await spendHashesOnAction(ns, "Reduce Minimum Security", target, 1);
         const minLevelAfter = ns.getServerMinSecurityLevel(target);
-        ns.print(`Reduced minimum security level on ${target} from ${minLevel} to ${minLevelAfter}`);
+        ns.print(`Reduced minimum security level on ${target} from ${ns.formatNumber(minLevel)} to ${ns.formatNumber(minLevelAfter)}`);
       }
-    } else if (r < 0.2) {
+    } else if (r < 0.6) {
       const target = selectRandomServer(ns);
       const maxMoney = ns.getServerMaxMoney(target);
-      if (maxMoney < ten_trillions && ns.getHackingLevel() > low_high_hack_exp_limit) {
+      if (maxMoney < ten_trillions) {
         await spendHashesOnAction(ns, "Increase Maximum Money", target, 1);
         const maxMoneyAfter = ns.getServerMaxMoney(target);
         ns.print(`Increased maximum money on ${target} from ${ns.formatNumber(maxMoney)}\$ to ${ns.formatNumber(maxMoneyAfter)}\$`);
@@ -79,7 +80,7 @@ export async function main(ns) {
       */
     } else {
       await spendHashesOnAction(ns, "Sell for Money", "target", 5);
-      ns.print(`Sold hashes for money`);
+      ns.print(`Sold hashes for money (x5)`);
     }
 
     await ns.sleep(250);

@@ -71,6 +71,8 @@ export async function main(ns) {
       const name = `neighbor-${purchasedServers.length}`;
       ns.print(`Purchasing server ${name}`);
       ns.purchaseServer(name, targetRam);
+      launchScript(ns, 'hack-remote.js', name);
+
       purchasedServers.push(name);
     }
 

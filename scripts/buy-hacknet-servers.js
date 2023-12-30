@@ -32,8 +32,8 @@ export async function main(ns) {
   const targetCache = hacknetConstants['MaxCache'];
   */
 
-  const targetCount = 15;
-  const targetLevel = 125;
+  const targetCount = 12;
+  const targetLevel = 100;
   const targetRam = hacknetConstants['MaxRam'];
   const targetCore = 24;
   const targetCache = hacknetConstants['MaxCache'];
