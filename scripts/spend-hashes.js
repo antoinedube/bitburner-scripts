@@ -45,14 +45,22 @@ export async function main(ns) {
 
   const ten_trillions = 10 * 1000 * 1000 * 1000 * 1000;  // k -> m -> g -> t
 
-  for (let i = 0; i < 25; i++) {
-    ns.print(`--> Improve studying ${i + 1} of 25`);
-    await spendHashesOnAction(ns, 'Improve Studying', 'home', 5);
+  if (ns.getHackingLevel() < 1000) {
+    for (let i = 0; i < 10; i++) {
+      await spendHashesOnAction(ns, 'Improve Studying', 'home', 1);
+      ns.print(`--> Improve studying ${i + 1} of 10`);
+
+      await spendHashesOnAction(ns, "Sell for Money", "target", 1);
+      ns.print(`Sold hashes for money (x1)`);
+    }
   }
 
   while (true) {
+    // Change probabilities based on hacking level
+    // Low hacking level: more spending on money
+    // High hacking level: more spending on reducing security / increasing money on servers
     const r = Math.random();
-    if (r < 0.3) {
+    if (r < 0.2) {
       const target = selectRandomServer(ns);
       const minLevel = ns.getServerMinSecurityLevel(target);
       if (minLevel > 1.0) {
@@ -60,7 +68,7 @@ export async function main(ns) {
         const minLevelAfter = ns.getServerMinSecurityLevel(target);
         ns.print(`Reduced minimum security level on ${target} from ${ns.formatNumber(minLevel)} to ${ns.formatNumber(minLevelAfter)}`);
       }
-    } else if (r < 0.6) {
+    } else if (r < 0.4) {
       const target = selectRandomServer(ns);
       const maxMoney = ns.getServerMaxMoney(target);
       if (maxMoney < ten_trillions) {

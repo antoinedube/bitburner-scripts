@@ -3,7 +3,7 @@ export async function main(ns) {
   const scripts = [
     'launch-hacking.js',
     'spend-hashes.js',
-    /* 'buy-hacknet-servers.js', */
+    'buy-hacknet-servers.js',
     'buy-servers.js',
     'manage-sleeves.js',
     'manage-gang.js',

@@ -24,18 +24,10 @@ export async function main(ns) {
       }
   */
 
-  /*
   const targetCount = hacknetConstants['MaxServers'];
   const targetLevel = hacknetConstants['MaxLevel'];
   const targetRam = hacknetConstants['MaxRam'];
   const targetCore = hacknetConstants['MaxCores'];
-  const targetCache = hacknetConstants['MaxCache'];
-  */
-
-  const targetCount = 12;
-  const targetLevel = 100;
-  const targetRam = hacknetConstants['MaxRam'];
-  const targetCore = 24;
   const targetCache = hacknetConstants['MaxCache'];
 
   while (true) {
@@ -99,7 +91,6 @@ export async function main(ns) {
         const allRamUpgraded = nodeStats.ram == targetRam;
         const allCoreUpgraded = nodeStats.cores == targetCore;
         const allCacheUpgraded = nodeStats.cache == targetCache;
-
 
         if (allLevelUpgraded && allRamUpgraded && allCoreUpgraded && allCacheUpgraded) {
           countCompletelyUpgraded++;

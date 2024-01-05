@@ -80,7 +80,6 @@ export async function main(ns) {
   }
 
   const purchasedServers = scanAllNetwork(ns).filter(name => name.startsWith('neighbor-'));
-  ns.print(`Purchased servers: ${purchasedServers}`);
 
   targetRam *= 2;
   while (true) {
