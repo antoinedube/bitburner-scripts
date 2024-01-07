@@ -44,6 +44,7 @@ export async function main(ns) {
   */
 
   const ten_trillions = 10 * 1000 * 1000 * 1000 * 1000;  // k -> m -> g -> t
+  const hacking_level_boundary = 1000;
 
   if (ns.getHackingLevel() < 1000) {
     for (let i = 0; i < 10; i++) {
@@ -63,7 +64,7 @@ export async function main(ns) {
     if (r < 0.2) {
       const target = selectRandomServer(ns);
       const minLevel = ns.getServerMinSecurityLevel(target);
-      if (minLevel > 1.0) {
+      if (minLevel > 1.0 && ns.getHackingLevel() > hacking_level_boundary) {
         await spendHashesOnAction(ns, "Reduce Minimum Security", target, 1);
         const minLevelAfter = ns.getServerMinSecurityLevel(target);
         ns.print(`Reduced minimum security level on ${target} from ${ns.formatNumber(minLevel)} to ${ns.formatNumber(minLevelAfter)}`);
@@ -71,7 +72,7 @@ export async function main(ns) {
     } else if (r < 0.4) {
       const target = selectRandomServer(ns);
       const maxMoney = ns.getServerMaxMoney(target);
-      if (maxMoney < ten_trillions) {
+      if (maxMoney < ten_trillions && ns.getHackingLevel() > hacking_level_boundary) {
         await spendHashesOnAction(ns, "Increase Maximum Money", target, 1);
         const maxMoneyAfter = ns.getServerMaxMoney(target);
         ns.print(`Increased maximum money on ${target} from ${ns.formatNumber(maxMoney)}\$ to ${ns.formatNumber(maxMoneyAfter)}\$`);
@@ -87,10 +88,17 @@ export async function main(ns) {
               }
       */
     } else {
-      await spendHashesOnAction(ns, "Sell for Money", "target", 5);
-      ns.print(`Sold hashes for money (x5)`);
+      const sellAmount = ns.hacknet.numHashes() / 4;
+
+      if (sellAmount < 1) {
+        await spendHashesOnAction(ns, "Sell for Money", "target", 1);
+        ns.print(`Sold hashes for money (${ns.formatNumber(1)})`);
+      } else {
+        await spendHashesOnAction(ns, "Sell for Money", "target", sellAmount);
+        ns.print(`Sold hashes for money (${ns.formatNumber(sellAmount)})`);
+      }
     }
 
-    await ns.sleep(250);
+    await ns.sleep(1000);
   }
 }
