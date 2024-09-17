@@ -1,0 +1,13 @@
+/** @param {NS} ns */
+export async function main(ns) {
+    // Ref: https://github.com/danielyxie/bitburner/blob/dev/markdown/bitburner.corporation.md
+    if (ns.corporation.hasCorporation()) {
+        ns.tprint('Player has corporation');
+    }
+    else {
+        ns.tprint('Player does not have corporation');
+    }
+    const corporation = ns.corporation.getCorporation();
+    ns.tprint(`Corporation data:\n${corporation}`);
+}
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoibWFuYWdlLWNvcnBvcmF0aW9uLmpzIiwic291cmNlUm9vdCI6IiIsInNvdXJjZXMiOlsiLi4vc2NyaXB0cy9tYW5hZ2UtY29ycG9yYXRpb24uanMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUEscUJBQXFCO0FBQ3JCLE1BQU0sQ0FBQyxLQUFLLFVBQVUsSUFBSSxDQUFDLEVBQUU7SUFDekIsMEZBQTBGO0lBQzFGLElBQUksRUFBRSxDQUFDLFdBQVcsQ0FBQyxjQUFjLEVBQUUsRUFBRTtRQUNqQyxFQUFFLENBQUMsTUFBTSxDQUFDLHdCQUF3QixDQUFDLENBQUM7S0FDdkM7U0FBTTtRQUNILEVBQUUsQ0FBQyxNQUFNLENBQUMsa0NBQWtDLENBQUMsQ0FBQztLQUNqRDtJQUVELE1BQU0sV0FBVyxHQUFHLEVBQUUsQ0FBQyxXQUFXLENBQUMsY0FBYyxFQUFFLENBQUM7SUFDcEQsRUFBRSxDQUFDLE1BQU0sQ0FBQyxzQkFBc0IsV0FBVyxFQUFFLENBQUMsQ0FBQztBQUNuRCxDQUFDIiwic291cmNlc0NvbnRlbnQiOlsiLyoqIEBwYXJhbSB7TlN9IG5zICovXG5leHBvcnQgYXN5bmMgZnVuY3Rpb24gbWFpbihucykge1xuICAgIC8vIFJlZjogaHR0cHM6Ly9naXRodWIuY29tL2RhbmllbHl4aWUvYml0YnVybmVyL2Jsb2IvZGV2L21hcmtkb3duL2JpdGJ1cm5lci5jb3Jwb3JhdGlvbi5tZFxuICAgIGlmIChucy5jb3Jwb3JhdGlvbi5oYXNDb3Jwb3JhdGlvbigpKSB7XG4gICAgICAgIG5zLnRwcmludCgnUGxheWVyIGhhcyBjb3Jwb3JhdGlvbicpO1xuICAgIH0gZWxzZSB7XG4gICAgICAgIG5zLnRwcmludCgnUGxheWVyIGRvZXMgbm90IGhhdmUgY29ycG9yYXRpb24nKTtcbiAgICB9XG5cbiAgICBjb25zdCBjb3Jwb3JhdGlvbiA9IG5zLmNvcnBvcmF0aW9uLmdldENvcnBvcmF0aW9uKCk7XG4gICAgbnMudHByaW50KGBDb3Jwb3JhdGlvbiBkYXRhOlxcbiR7Y29ycG9yYXRpb259YCk7XG59XG4iXX0=
