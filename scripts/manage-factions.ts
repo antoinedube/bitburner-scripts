@@ -75,8 +75,14 @@ async function getNextFaction(ns: NS): Promise<string> {
     return 'NO-FACTION-LEFT';
 }
 
+async function waitForReputation(ns: NS, faction: string, augmentation: string): Promise<void> {
+    while (ns.singularity.getAugmentationRepReq(augmentation) > ns.singularity.getFactionRep(faction)) {
+        ns.print(`Augmentation reputation: ${ns.formatNumber(ns.singularity.getAugmentationRepReq(augmentation))}, current reputation: ${ns.formatNumber(ns.singularity.getFactionRep(faction))}`);
+        await ns.sleep(5000);
+    }
+}
+
 async function waitForMoney(ns: NS, augmentation: string): Promise<void> {
-    ns.print(`Buying: ${augmentation}`);
     while (ns.singularity.getAugmentationPrice(augmentation) > ns.getServerMoneyAvailable('home')) {
         ns.print(`Augmentation price: ${ns.formatNumber(ns.singularity.getAugmentationPrice(augmentation))}\$, money available: ${ns.formatNumber(ns.getServerMoneyAvailable('home'))}\$`);
         await ns.sleep(5000);
@@ -103,8 +109,23 @@ async function purchaseAugmentations(ns: NS, faction: string): Promise<void> {
             return augmentation;
         });
 
-        const mostExpensiveAugmentation = augmentationPriceList.sort((a: augmentation, b: augmentation) => b.price - a.price)[0];
+        const availableAugmentations = augmentationPriceList.filter((a: augmentation) => {
+            const preRequisites = ns.singularity.getAugmentationPrereq(a.name);
+            const hasNoPrerequisites = preRequisites.length==0;
+            const allPrerequisitesAreOwned = preRequisites.every((b: string) => ownedAugmentations.some((c: string) => b==c));
+
+            if (hasNoPrerequisites || allPrerequisitesAreOwned) {
+                return true;
+            }
+
+            return false;
+        });
+
+        const sortedAugmentations = availableAugmentations.sort((a: augmentation, b: augmentation) => b.price - a.price);
+        const mostExpensiveAugmentation: augmentation = sortedAugmentations[0];
+
         ns.print(`Most expensive augmentation is ${mostExpensiveAugmentation.name} with a price of ${ns.formatNumber(mostExpensiveAugmentation.price)}\$`);
+        await waitForReputation(ns, faction, mostExpensiveAugmentation.name);
         await waitForMoney(ns, mostExpensiveAugmentation.name);
         ns.singularity.purchaseAugmentation(faction, mostExpensiveAugmentation.name);
 
