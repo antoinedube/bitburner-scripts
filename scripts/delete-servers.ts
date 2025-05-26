@@ -1,7 +1,7 @@
+import { NS } from "@ns";
 import { scanAllNetwork } from "./scan.js";
 
-/** @param {NS} ns */
-export async function main(ns) {
+export async function main(ns: NS): Promise<void> {
   const fullServerList = scanAllNetwork(ns);
   const serverList = fullServerList.filter(name => name.startsWith('neighbor-'));
 

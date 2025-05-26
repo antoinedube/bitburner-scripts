@@ -1,7 +1,8 @@
-import { scanAllNetwork } from "./scan.js";
+import { NS } from "@ns";
 
-/** @param {NS} ns */
-export async function main(ns) {
+import { scanAllNetwork } from "./scan";
+
+export async function main(ns: NS): Promise<void> {
   const fullServerList = scanAllNetwork(ns);
   const serverList = fullServerList.filter(name => !name.startsWith('neighbor-'));
 
@@ -9,6 +10,6 @@ export async function main(ns) {
     const moneyAvailable = ns.getServerMoneyAvailable(server);
     const maxMoneyAvailable = ns.getServerMaxMoney(server);
 
-    ns.tprint(`Server: ${server} --> ${ns.formatNumber(moneyAvailable)}\$ / ${ns.formatNumber(maxMoneyAvailable)}\$`);
+    ns.tprint(`Server: ${server} --> ${ns.format.number(moneyAvailable)}\$ / ${ns.format.number(maxMoneyAvailable)}\$`);
   }
 }

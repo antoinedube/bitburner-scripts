@@ -1,18 +1,18 @@
-import { scanAllNetwork, buildPath } from "./scan.js";
-import { buildHackingProgramList, countAvailablePrograms } from "./hacking-programs.js";
+import { NS } from "@ns";
 
-/** @param {NS} ns */
-async function openPorts(ns, hackingPrograms, target) {
+import { scanAllNetwork, buildPath } from "./scan";
+import { buildHackingProgramList, countAvailablePrograms, HackingProgramDetail } from "./hacking-programs";
+
+async function openPorts(ns: NS, hackingPrograms: HackingProgramDetail[], target: string): Promise<void> {
   for (const program of hackingPrograms) {
     if (ns.fileExists(program.executableName, "home")) {
       const executable = program['functionName'].bind(ns);
-      await executable(target);
+      executable(target);
     }
   }
 }
 
-/** @param {NS} ns */
-function launchScript(ns, script, server) {
+function launchScript(ns: NS, script: string, server: string): void {
   const scriptRam = ns.getScriptRam(script);
   const availableRam = ns.getServerMaxRam(server) - ns.getServerUsedRam(server);
   const scriptNumThreads = ~~(availableRam / scriptRam);
@@ -22,8 +22,7 @@ function launchScript(ns, script, server) {
   }
 }
 
-/** @param {NS} ns */
-export async function main(ns) {
+export async function main(ns: NS): Promise<void> {
   ns.disableLog('ALL');
 
   const replace = false;  // Replace an existing script

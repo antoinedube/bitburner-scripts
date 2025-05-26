@@ -1,7 +1,8 @@
-/** @param {NS} ns */
-function buildServerList(ns) {
+import { NS } from "@ns";
+
+function buildServerList(ns: NS): string[] {
   let serversToScan = ['home'];
-  let serverList = [];
+  let serverList: string[] = [];
 
   while (serversToScan.length > 0) {
     const server = serversToScan.pop();
@@ -18,13 +19,11 @@ function buildServerList(ns) {
   return serverList;
 }
 
-/** @param {NS} ns */
-function isAccessible(ns, server) {
+function isAccessible(ns: NS, server: string): boolean {
   return ns.hasRootAccess(server) && ns.getServerRequiredHackingLevel(server) <= ns.getHackingLevel();
 }
 
-/** @param {NS} ns */
-function hasMoney(ns, server) {
+function hasMoney(ns: NS, server: string): boolean {
   const currentMoney = ns.getServerMoneyAvailable(server);
   const maxMoney = ns.getServerMaxMoney(server);
   const target = 0.90 * maxMoney;
@@ -33,8 +32,7 @@ function hasMoney(ns, server) {
   return currentMoney > target;
 }
 
-/** @param {NS} ns */
-function hasSecurityLevel(ns, server) {
+function hasSecurityLevel(ns: NS, server: string): boolean {
   const currentLevel = ns.getServerSecurityLevel(server);
   const minLevel = ns.getServerMinSecurityLevel(server);
   const target = 1.10 * minLevel;
@@ -43,15 +41,14 @@ function hasSecurityLevel(ns, server) {
   return currentLevel < target;
 }
 
-/** @param {NS} ns */
-export async function main(ns) {
+export async function main(ns: NS): Promise<void> {
   ns.disableLog('ALL');
   ns.enableLog('grow');
   ns.enableLog('hack');
   ns.enableLog('weaken');
 
   const runningScript = ns.getRunningScript();
-  const numThreads = runningScript.threads;
+  const numThreads = runningScript!.threads;
 
   while (true) {
     await ns.sleep(500);

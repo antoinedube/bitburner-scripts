@@ -1,13 +1,13 @@
-/** @param {NS} ns */
-function displayMembersInformation(ns, memberName) {
+import { NS } from "@ns";
+
+function displayMembersInformation(ns: NS, memberName: string): void {
   const memberInfo = ns.gang.getMemberInformation(memberName);
   const hackingLevel = memberInfo['hack'];
   const currentTask = memberInfo['task'];
   ns.print(`Member: ${memberName}\thacking level: ${hackingLevel}\ttask: ${currentTask}`);
 }
 
-/** @param {NS} ns */
-function assignMember(ns, name, task = '') {
+function assignMember(ns: NS, name: string, task: string = ''): void {
   const memberInfo = ns.gang.getMemberInformation(name);
   const hackingLevel = memberInfo['hack'];
   const currentTask = memberInfo['task'];
@@ -45,8 +45,7 @@ function assignMember(ns, name, task = '') {
   }
 }
 
-/** @param {NS} ns */
-function recruitIfPossible(ns) {
+function recruitIfPossible(ns: NS): void {
   if (!ns.gang.canRecruitMember()) {
     return;
   }
@@ -57,8 +56,7 @@ function recruitIfPossible(ns) {
   assignMember(ns, newGangMemberName);
 }
 
-/** @param {NS} ns */
-function reassignMembersAccordingToWantedLevelPenalty(ns) {
+function reassignMembersAccordingToWantedLevelPenalty(ns: NS): void {
   const gangInformation = ns.gang.getGangInformation();
   /*
   Gang information structure:
@@ -91,7 +89,7 @@ function reassignMembersAccordingToWantedLevelPenalty(ns) {
   }
 }
 
-function ascendIfGainIsWorth(ns) {
+function ascendIfGainIsWorth(ns: NS): void {
   ns.gang.getMemberNames().map(memberName => {
     const results = ns.gang.getAscensionResult(memberName);
 
@@ -108,7 +106,7 @@ function ascendIfGainIsWorth(ns) {
   });
 }
 
-function buyEquipment(ns) {
+function buyEquipment(ns: NS): void {
   /*
       [
           "Baseball Bat",
@@ -167,8 +165,7 @@ function buyEquipment(ns) {
   });
 }
 
-/** @param {NS} ns */
-export async function main(ns) {
+export async function main(ns: NS): Promise<void> {
   ns.disableLog('sleep');
   ns.disableLog('getServerMoneyAvailable');
   let counter = 0;

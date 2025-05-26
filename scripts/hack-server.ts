@@ -1,9 +1,10 @@
-function computeTargetLevel(currentLevel, targetLevel, a, b) {
+import { NS } from "@ns";
+
+function computeTargetLevel(currentLevel: number, targetLevel: number, a: number, b: number): number {
   return (a * currentLevel + b * targetLevel) / (a + b);
 }
 
-/** @param {NS} ns */
-export async function main(ns) {
+export async function main(ns: NS): Promise<void> {
   ns.disableLog('getServerSecurityLevel');
   ns.disableLog('getServerMinSecurityLevel');
   ns.disableLog('getServerMoneyAvailable');

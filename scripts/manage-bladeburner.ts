@@ -1,10 +1,22 @@
-/** @param {NS} ns */
-function findNextAction(ns) {
+import { NS } from "@ns";
+
+interface Action {
+  type: string,
+  name: string
+}
+
+interface TaskTypes {
+  General: string[],
+  Contract: string[],
+  Operation: string[]
+}
+
+function findNextAction(ns: NS): Action {
   const orderOfTypes = ['Operation', 'Contract', 'General'];
-  const targetedTasks = {
-    'General': ['Training'],
-    'Contract': ['Tracking', 'Bounty Hunter', 'Retirement'],
-    'Operation': ['Investigation', 'Stealth Retirement Operation', 'Assassination']
+  const targetedTasks: TaskTypes = {
+    General: ['Training'],
+    Contract: ['Tracking', 'Bounty Hunter', 'Retirement'],
+    Operation: ['Investigation', 'Stealth Retirement Operation', 'Assassination']
   }
 
   const lowStaminaTask = 'Hyperbolic Regeneration Chamber';
@@ -14,8 +26,8 @@ function findNextAction(ns) {
 
   if (currentStamina < 0.80 * maxStamina) {
     return {
-      'type': 'General',
-      'name': lowStaminaTask
+      type: 'General',
+      name: lowStaminaTask
     };
   }
 
@@ -52,8 +64,7 @@ function findNextAction(ns) {
   };
 }
 
-/** @param {NS} ns */
-function upgradeBladeburnerSkills(ns) {
+function upgradeBladeburnerSkills(ns: NS): void {
   const targetedSkills = [
     "Blade's Intuition",
     "Cloak",
@@ -73,8 +84,7 @@ function upgradeBladeburnerSkills(ns) {
   }
 }
 
-/** @param {NS} ns */
-export async function main(ns) {
+export async function main(ns: NS): Promise<void> {
   ns.disableLog('sleep');
   const ten_seconds = 10 * 1000;
 
@@ -87,6 +97,11 @@ export async function main(ns) {
 
   while (true) {
     const currentAction = ns.bladeburner.getCurrentAction();
+
+    if (currentAction == null) {
+      await ns.sleep(ten_seconds);
+      continue;
+    }
 
     const newAction = findNextAction(ns);
     if (currentAction['type'] != newAction['type'] || currentAction['name'] != newAction['name']) {

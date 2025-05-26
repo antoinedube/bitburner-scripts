@@ -1,5 +1,12 @@
-/** @param {NS} ns */
-export function buildHackingProgramList(ns) {
+import { NS } from "@ns";
+
+export interface HackingProgramDetail {
+  name: string,
+  functionName: (host: string) => boolean,
+  executableName: string
+}
+
+export function buildHackingProgramList(ns: NS): HackingProgramDetail[] {
   return [
     { name: 'brute-ssh', functionName: ns.brutessh, executableName: "BruteSSH.exe" },
     { name: 'ftp-crack', functionName: ns.ftpcrack, executableName: "FTPCrack.exe" },
@@ -9,8 +16,7 @@ export function buildHackingProgramList(ns) {
   ];
 }
 
-/** @param {NS} ns */
-export function listAvailablePrograms(ns, hackingPrograms) {
+export function listAvailablePrograms(ns: NS, hackingPrograms: HackingProgramDetail[]): HackingProgramDetail[] {
   let availablePrograms = [];
   for (const program of hackingPrograms) {
     if (ns.fileExists(program.executableName, "home")) {
@@ -20,8 +26,7 @@ export function listAvailablePrograms(ns, hackingPrograms) {
   return availablePrograms;
 }
 
-/** @param {NS} ns */
-export function countAvailablePrograms(ns, hackingPrograms) {
+export function countAvailablePrograms(ns: NS, hackingPrograms: HackingProgramDetail[]): number {
   const availablePrograms = listAvailablePrograms(ns, hackingPrograms);
   return availablePrograms.length;
 }

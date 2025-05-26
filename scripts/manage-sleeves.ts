@@ -1,5 +1,6 @@
-/** @param {NS} ns */
-async function setSleevesTask(ns) {
+import { NS } from "@ns";
+
+async function setSleevesTask(ns: NS): Promise<void> {
   for (var i = 0; i < ns.sleeve.getNumSleeves(); i++) {
     const sleeve = ns.sleeve.getSleeve(i);
     ns.print(`Sleeve ${i} has:`);
@@ -26,8 +27,7 @@ async function setSleevesTask(ns) {
   }
 }
 
-/** @param {NS} ns */
-export async function main(ns) {
+export async function main(ns: NS): Promise<void> {
   ns.disableLog('sleep');
 
   while (true) {

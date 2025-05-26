@@ -1,7 +1,8 @@
-/** @param {NS} ns */
-export function scanAllNetwork(ns) {
+import { NS } from "@ns";
+
+export function scanAllNetwork(ns: NS): string[] {
   let serversToScan = ['home'];
-  let serverList = [];
+  let serverList: string[] = [];
 
   while (serversToScan.length > 0) {
     const server = serversToScan.pop();
@@ -18,15 +19,19 @@ export function scanAllNetwork(ns) {
   return serverList;
 }
 
-/** @param {NS} ns */
-export async function buildPath(ns, server) {
+export async function buildPath(ns: NS, server: string): Promise<string[]> {
   let pathList = [['home']];
 
   while (true) {
     const currentPath = pathList.pop();
     const lastItem = currentPath.pop();
     const neighbors = ns.scan(lastItem);
-    const neighborsWithoutServers = neighbors.filter(name => !name.startsWith('neighbor-') && !name.startsWith('hacknet-') && !currentPath.includes(name));
+
+    const neighborsWithoutServers = neighbors.filter(name => {
+      !name.startsWith('neighbor-')
+        && !name.startsWith('hacknet-')
+        && !currentPath.includes(name)
+    });
 
     for (let neighbor of neighborsWithoutServers) {
       let newPath = currentPath.slice();
