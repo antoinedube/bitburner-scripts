@@ -20,10 +20,22 @@ export function scanAllNetwork(ns: NS): string[] {
 }
 
 export async function buildPath(ns: NS, server: string): Promise<string[]> {
+  const SLEEP_DURATION = 500;
   let pathList = [['home']];
 
   while (true) {
+    if (pathList.length == 0) {
+      await ns.sleep(SLEEP_DURATION);
+      continue;
+    }
+
     const currentPath = pathList.pop();
+
+    if (!currentPath || currentPath.length == 0) {
+      await ns.sleep(SLEEP_DURATION);
+      continue;
+    }
+
     const lastItem = currentPath.pop();
     const neighbors = ns.scan(lastItem);
 

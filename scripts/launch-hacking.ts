@@ -28,7 +28,7 @@ export async function main(ns: NS): Promise<void> {
   const replace = false;  // Replace an existing script
 
   while (true) {
-    const fullServerList = scanAllNetwork(ns, 'home');
+    const fullServerList = scanAllNetwork(ns);
     const filteredServerList = fullServerList.filter(name => !name.startsWith('neighbor-') && !name.startsWith('hacknet-'));
 
     for (const server of filteredServerList) {

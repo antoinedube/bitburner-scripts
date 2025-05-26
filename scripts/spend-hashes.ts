@@ -19,7 +19,7 @@ async function spendHashesOnAction(ns: NS, action: string, target: string, amoun
 function selectRandomServer(ns: NS): string {
   const serversToAvoid = ['CSEC', 'I.I.I.I', 'run4theh111z', 'avmnite-02h', '.', 'darkweb', 'The-Cave', 'w0r1d_d43m0n'];
 
-  const fullServerList = scanAllNetwork(ns, 'home');
+  const fullServerList = scanAllNetwork(ns);
   const filteredServerList = fullServerList.filter(name => !name.startsWith('neighbor-') && !name.startsWith('hacknet-') && !serversToAvoid.includes(name));
   const serverIndex = Math.floor(Math.random() * filteredServerList.length);
   return filteredServerList[serverIndex];
@@ -77,7 +77,7 @@ export async function main(ns: NS): Promise<void> {
       }
     }
     else {
-      const sellAmount = parseInt(ns.hacknet.numHashes() / 5.0);
+      const sellAmount = Math.floor(ns.hacknet.numHashes() / 5.0);
 
       if (sellAmount < 1) {
         await spendHashesOnAction(ns, "Sell for Money", "target", 1);
