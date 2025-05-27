@@ -28,7 +28,7 @@ function hasMoney(ns: NS, server: string): boolean {
   const maxMoney = ns.getServerMaxMoney(server);
   const target = 0.90 * maxMoney;
 
-  ns.print(`[${server}] Money -> current: ${currentMoney.toFixed(2)}, target: ${target.toFixed(2)}`);
+  ns.print(`[${server}] Money -> current: ${ns.format.number(currentMoney)}\$, target: ${ns.format.number(target)}\$`);
   return currentMoney > target;
 }
 

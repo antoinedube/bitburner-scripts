@@ -25,12 +25,11 @@ export async function buildPath(ns: NS, server: string): Promise<string[]> {
 
   while (true) {
     if (pathList.length == 0) {
-      await ns.sleep(SLEEP_DURATION);
-      continue;
+      ns.print(`No path found for ${server}`);
+      return [];
     }
 
-    const currentPath = pathList.pop();
-
+    const currentPath = pathList.shift();
     if (!currentPath || currentPath.length == 0) {
       await ns.sleep(SLEEP_DURATION);
       continue;
@@ -38,11 +37,8 @@ export async function buildPath(ns: NS, server: string): Promise<string[]> {
 
     const lastItem = currentPath.pop();
     const neighbors = ns.scan(lastItem);
-
-    const neighborsWithoutServers = neighbors.filter(name => {
-      !name.startsWith('neighbor-')
-        && !name.startsWith('hacknet-')
-        && !currentPath.includes(name)
+    const neighborsWithoutServers = neighbors.filter((name) => {
+      return !name.startsWith('neighbor-') && !name.startsWith('hacknet-') && !currentPath.includes(name)
     });
 
     for (let neighbor of neighborsWithoutServers) {

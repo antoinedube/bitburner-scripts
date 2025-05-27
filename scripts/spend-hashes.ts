@@ -2,13 +2,15 @@ import { NS } from '@ns';
 import { scanAllNetwork } from "./scan";
 
 async function spendHashesOnAction(ns: NS, action: string, target: string, amount: number): Promise<void> {
+  const SLEEP_DURATION = 1000;
+
   if (ns.hacknet.hashCapacity() <= ns.hacknet.hashCost(action, amount)) {
     ns.print(`Hash capacity is too low for ${action}`);
     return;
   }
 
   while (ns.hacknet.numHashes() < ns.hacknet.hashCost(action, amount)) {
-    await ns.sleep(1000);
+    await ns.sleep(SLEEP_DURATION);
   }
 
   if (!ns.hacknet.spendHashes(action, target, amount)) {
@@ -27,6 +29,7 @@ function selectRandomServer(ns: NS): string {
 
 export async function main(ns: NS): Promise<void> {
   ns.disableLog('ALL');
+  const SLEEP_DURATION = 1000;
 
   /*
     const upgrades = ns.hacknet.getHashUpgrades();
@@ -88,6 +91,6 @@ export async function main(ns: NS): Promise<void> {
       }
     }
 
-    await ns.sleep(1000);
+    await ns.sleep(SLEEP_DURATION);
   }
 }

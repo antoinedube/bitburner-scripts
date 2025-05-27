@@ -24,6 +24,7 @@ function launchScript(ns: NS, script: string, server: string): void {
 
 export async function main(ns: NS): Promise<void> {
   ns.disableLog('ALL');
+  const SLEEP_DURATION = 5000;
 
   const replace = false;  // Replace an existing script
 
@@ -70,7 +71,9 @@ export async function main(ns: NS): Promise<void> {
       const isBackdoorInstalled = ns.getServer(server).backdoorInstalled;
       ns.print(`isBackdoorInstalled: ${isBackdoorInstalled}`);
       if (ns.hasRootAccess(server) && !isBackdoorInstalled && server != 'w0r1d_d43m0n') {
+        ns.print("Build path");
         const path = await buildPath(ns, server);
+        ns.print("Done building path");
         for (let item of path) {
           // ns.print(`Connecting to ${item} from ${ns.singularity.getCurrentServer()}`);
           if (!ns.singularity.connect(item)) {
@@ -111,6 +114,6 @@ export async function main(ns: NS): Promise<void> {
       break;
     }
 
-    await ns.sleep(1000 * 5);
+    await ns.sleep(SLEEP_DURATION);
   }
 }

@@ -2,6 +2,7 @@ import { NS } from '@ns';
 
 export async function main(ns: NS): Promise<void> {
   ns.disableLog('ALL');
+  const SLEEP_DURATION = 500;
 
   const hacknetConstants = ns.formulas.hacknetServers.constants();
   /*
@@ -36,7 +37,7 @@ export async function main(ns: NS): Promise<void> {
       const cost = ns.hacknet.getPurchaseNodeCost();
       if (ns.getServerMoneyAvailable("home") >= cost) {
         ns.hacknet.purchaseNode();
-        ns.print('Bought net node');
+        ns.print('Bought hacknet node');
       }
     }
 
@@ -111,6 +112,6 @@ export async function main(ns: NS): Promise<void> {
       break;
     }
 
-    await ns.sleep(250);
+    await ns.sleep(SLEEP_DURATION);
   }
 }

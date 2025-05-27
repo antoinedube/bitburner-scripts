@@ -16,6 +16,7 @@ export async function main(ns: NS): Promise<void> {
     if (TOR_ROUTER_PRICE <= moneyAvailable) {
       if (ns.singularity.purchaseTor()) {
         ns.print('TOR router purchased');
+        break;
       }
     }
 
