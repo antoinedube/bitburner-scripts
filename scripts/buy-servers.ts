@@ -67,7 +67,7 @@ export async function main(ns: NS) {
     if (ns.cloud.getServerCost(targetRam) < ns.getServerMoneyAvailable(HOME_SERVER)) {
       const name = `neighbor-${purchasedServers.length}`;
       ns.print(`Purchasing server ${name}`);
-      ns.purchaseServer(name, targetRam);
+      ns.cloud.purchaseServer(name, targetRam);
       launchScript(ns, 'hack-remote.js', name);
 
       purchasedServers.push(name);
