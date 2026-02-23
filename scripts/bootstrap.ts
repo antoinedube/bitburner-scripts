@@ -28,7 +28,7 @@ export async function main(ns: NS): Promise<void> {
     await ns.sleep(250);
   }
 
-  await ns.sleep(2 * 1000);
+  await ns.sleep(1000);
 
   const hackingScript = 'hack-remote.js';
   const scriptRam = ns.getScriptRam(hackingScript);

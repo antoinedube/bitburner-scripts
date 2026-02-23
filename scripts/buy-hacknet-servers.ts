@@ -47,8 +47,7 @@ export async function main(ns: NS): Promise<void> {
         const cost = ns.hacknet.getLevelUpgradeCost(i, 1);
         if (ns.getServerMoneyAvailable("home") >= cost) {
           ns.hacknet.upgradeLevel(i, 1);
-          const newLevel = ns.hacknet.getNodeStats(i).level;
-          ns.print(`Upgrading node ${i} to level ${newLevel}`);
+          ns.print(`Upgraded level on node ${i}`);
         }
       }
     }
@@ -59,8 +58,7 @@ export async function main(ns: NS): Promise<void> {
         const cost = ns.hacknet.getRamUpgradeCost(i, 1);
         if (ns.getServerMoneyAvailable("home") >= cost) {
           ns.hacknet.upgradeRam(i, 1);
-          const newLevel = ns.hacknet.getNodeStats(i).ram;
-          ns.print(`Upgrading node ${i} to ram ${newLevel}`);
+          ns.print(`Upgraded RAM on node ${i}`);
         }
       }
     }
@@ -71,8 +69,7 @@ export async function main(ns: NS): Promise<void> {
         const cost = ns.hacknet.getCoreUpgradeCost(i, 1);
         if (ns.getServerMoneyAvailable("home") >= cost) {
           ns.hacknet.upgradeCore(i, 1);
-          const newLevel = ns.hacknet.getNodeStats(i).cores;
-          ns.print(`Upgrading node ${i} to cores ${newLevel}`);
+          ns.print(`Upgraded core on node ${i}`);
         }
       }
     }
@@ -87,8 +84,7 @@ export async function main(ns: NS): Promise<void> {
         const cost = ns.hacknet.getCacheUpgradeCost(i, 1);
         if (ns.getServerMoneyAvailable("home") >= cost) {
           ns.hacknet.upgradeCache(i, 1);
-          const newLevel = ns.hacknet.getNodeStats(i).cache;
-          ns.print(`Upgrading node ${i} to cache ${newLevel}`);
+          ns.print(`Upgraded cache on node ${i}`);
         }
       }
     }

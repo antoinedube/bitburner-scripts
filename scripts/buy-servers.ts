@@ -29,10 +29,10 @@ export async function main(ns: NS) {
   const HOME_SERVER = 'home';
 
   let targetRam = 4;
-  while (targetRam <= ns.getPurchasedServerMaxRam()) {
-    const maxNumberOfServers = ns.getPurchasedServerLimit();
+  while (targetRam <= ns.cloud.getRamLimit()) {
+    const maxNumberOfServers = ns.cloud.getServerLimit();
     const availableMoney = ns.getServerMoneyAvailable('home');
-    const serverCost = ns.getPurchasedServerCost(targetRam);
+    const serverCost = ns.cloud.getServerCost(targetRam);
 
     if (availableMoney < maxNumberOfServers * serverCost) {
       targetRam /= 2;
@@ -46,8 +46,8 @@ export async function main(ns: NS) {
     targetRam = 8;
   }
 
-  if (targetRam > ns.getPurchasedServerMaxRam()) {
-    targetRam = 0.5 * ns.getPurchasedServerMaxRam();
+  if (targetRam > ns.cloud.getRamLimit()) {
+    targetRam = 0.5 * ns.cloud.getRamLimit();
   }
 
   ns.print(`Starting target ram: ${targetRam}`);
@@ -59,12 +59,12 @@ export async function main(ns: NS) {
     let purchasedServers = serverList.filter(name => name.startsWith('neighbor-'));
 
     // Stopping criteria
-    if (purchasedServers.length == ns.getPurchasedServerLimit()) {
+    if (purchasedServers.length == ns.cloud.getServerLimit()) {
       break;
     }
 
     // If limit is not reached, buy server at current targetRam
-    if (ns.getPurchasedServerCost(targetRam) < ns.getServerMoneyAvailable(HOME_SERVER)) {
+    if (ns.cloud.getServerCost(targetRam) < ns.getServerMoneyAvailable(HOME_SERVER)) {
       const name = `neighbor-${purchasedServers.length}`;
       ns.print(`Purchasing server ${name}`);
       ns.purchaseServer(name, targetRam);
@@ -89,8 +89,8 @@ export async function main(ns: NS) {
       }
     }
 
-    if (countServerWithTargetRam == ns.getPurchasedServerLimit()) {
-      if (targetRam >= ns.getPurchasedServerMaxRam()) {
+    if (countServerWithTargetRam == ns.cloud.getServerLimit()) {
+      if (targetRam >= ns.cloud.getRamLimit()) {
         break;
       }
 
@@ -103,9 +103,9 @@ export async function main(ns: NS) {
       const purchasedServerRam = ns.getServer(purchasedServer).maxRam;
       if (purchasedServerRam < targetRam) {
         const moneyAvailable = ns.getServerMoneyAvailable('home');
-        const upgradeCost = ns.getPurchasedServerUpgradeCost(purchasedServer, targetRam);
+        const upgradeCost = ns.cloud.getServerUpgradeCost(purchasedServer, targetRam);
         if (upgradeCost < moneyAvailable) {
-          if (ns.upgradePurchasedServer(purchasedServer, targetRam)) {
+          if (ns.cloud.upgradeServer(purchasedServer, targetRam)) {
             ns.print(`Upgraded ${purchasedServer} to ${ns.format.ram(targetRam)} with cost of ${ns.format.number(upgradeCost)}\$`);
             launchScript(ns, 'hack-remote.js', purchasedServer);
           } else {
