@@ -159,7 +159,7 @@ async function waitAndDestroyWorldDaemon(ns: NS): Promise<void> {
 
   ns.print(`${worldDaemon} is root accessible`);
   ns.tprint(`${worldDaemon} is root accessible`);
-  ns.singularity.destroyW0r1dD43m0n(12, 'bootstrap.js');
+  // ns.singularity.destroyW0r1dD43m0n(12, 'bootstrap.js');
 }
 
 export async function main(ns: NS): Promise<void> {

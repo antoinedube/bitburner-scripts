@@ -30,13 +30,13 @@ interface StockHistory {
   history: Array<HistoryItem>
 }
 
-interface SellCandidate {
-  symbol: string
-}
-
-interface BuyCandidate {
-  symbol: string
-}
+// interface SellCandidate {
+//   symbol: string
+// }
+//
+// interface BuyCandidate {
+//   symbol: string
+// }
 
 function fetchStockList(ns: NS): Array<Stock> {
   const stocks = [];
@@ -57,7 +57,7 @@ function fetchStockList(ns: NS): Array<Stock> {
       average_price_short: position[3]
     }
 
-    if (ns.stock.hasTIXAPIAccess()) {
+    if (ns.stock.hasTixApiAccess()) {
       stock['forecast'] = ns.stock.getForecast(symbol);
       stock['volatility'] = ns.stock.getVolatility(symbol);
     }
@@ -71,7 +71,7 @@ function fetchStockList(ns: NS): Array<Stock> {
 function addToStocksWithHistories(stockHistories: Array<StockHistory>, stocks: Array<Stock>) {
   for (const stock of stocks) {
     const symbol = stock['symbol'];
-    const price = stock['price'];
+    // const price = stock['price'];
 
     const subset = stockHistories.filter((stockHistory) => stockHistory.stock.symbol == symbol);
 
@@ -79,7 +79,7 @@ function addToStocksWithHistories(stockHistories: Array<StockHistory>, stocks: A
       throw new Error("Invalid subset length");
     }
 
-    const stockHistoryItem = subset[0];
+    // const stockHistoryItem = subset[0];
   }
 }
 

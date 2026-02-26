@@ -24,8 +24,8 @@ function launchScript(ns: NS, scriptName: string, server: string) {
 export async function main(ns: NS) {
   ns.disableLog('ALL');
   const BUYING_DELAY = 250;
-  const UPGRADING_DELAY = 5 * 1000;
-  const FOLLOWING_BATCH_DELAY = 1000 * 30;
+  const UPGRADING_DELAY = 1000;
+  const FOLLOWING_BATCH_DELAY = 1000 * 10;
   const HOME_SERVER = 'home';
 
   let targetRam = 4;

@@ -9,6 +9,9 @@ export function scanAllNetwork(ns: NS): string[] {
     const neighbors = ns.scan(server);
 
     for (const neighbor of neighbors) {
+      if (server == 'darkweb') {
+        ns.print("======================================================\nNeighbor of darkweb: {neighbor}\n======================================================");
+      }
       if (neighbor != 'home' && !serverList.includes(neighbor)) {
         serversToScan.push(neighbor);
         serverList.push(neighbor);
