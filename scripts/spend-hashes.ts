@@ -57,7 +57,7 @@ export async function main(ns: NS): Promise<void> {
     // Low hacking level: more spending on money
     // High hacking level: more spending on reducing security / increasing money on servers
     const r = Math.random();
-    if (r < 0.1) {
+    if (r < 0.2) {
       const target = selectRandomServer(ns);
       const minLevel = ns.getServerMinSecurityLevel(target);
       if (minLevel > 1.0 && ns.getHackingLevel() > hacking_level_boundary) {
@@ -65,7 +65,7 @@ export async function main(ns: NS): Promise<void> {
         const minLevelAfter = ns.getServerMinSecurityLevel(target);
         ns.print(`Reduced minimum security level on ${target} from ${ns.format.number(minLevel)} to ${ns.format.number(minLevelAfter)}`);
       }
-    } else if (r < 0.2) {
+    } else if (r < 0.4) {
       const target = selectRandomServer(ns);
       const maxMoney = ns.getServerMaxMoney(target);
       if (maxMoney < ten_trillions && ns.getHackingLevel() > hacking_level_boundary) {
@@ -73,7 +73,7 @@ export async function main(ns: NS): Promise<void> {
         const maxMoneyAfter = ns.getServerMaxMoney(target);
         ns.print(`Increased maximum money on ${target} from ${ns.format.number(maxMoney)}\$ to ${ns.format.number(maxMoneyAfter)}\$`);
       }
-    } else if (r < 0.25) {
+    } else if (r < 0.6) {
       if (ns.getHackingLevel() > hacking_level_boundary) {
         await spendHashesOnAction(ns, "Improve Studying", "target", 1);
         ns.print('Improved studying');

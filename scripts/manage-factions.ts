@@ -77,7 +77,11 @@ async function getNextFaction(ns: NS): Promise<string> {
 
 async function waitForReputation(ns: NS, faction: string, augmentation: string): Promise<void> {
   while (ns.singularity.getAugmentationRepReq(augmentation) > ns.singularity.getFactionRep(faction)) {
-    ns.print(`Augmentation reputation: ${ns.format.number(ns.singularity.getAugmentationRepReq(augmentation))}, current reputation: ${ns.format.number(ns.singularity.getFactionRep(faction))}`);
+    const reputationRequirement = ns.singularity.getAugmentationRepReq(augmentation);
+    const formattedReputationRequirement = ns.format.number(reputationRequirement);
+    const currentReputation = ns.singularity.getFactionRep(faction);
+    const formattedCurrentReputation = ns.format.number(currentReputation);
+    ns.print(`Augmentation reputation: ${formattedReputationRequirement}, current reputation: ${formattedCurrentReputation}`);
     await ns.sleep(5000);
   }
 }
@@ -159,7 +163,7 @@ async function waitAndDestroyWorldDaemon(ns: NS): Promise<void> {
 
   ns.print(`${worldDaemon} is root accessible`);
   ns.tprint(`${worldDaemon} is root accessible`);
-  // ns.singularity.destroyW0r1dD43m0n(12, 'bootstrap.js');
+  ns.singularity.destroyW0r1dD43m0n(12, 'bootstrap.js');
 }
 
 export async function main(ns: NS): Promise<void> {

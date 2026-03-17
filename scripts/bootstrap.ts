@@ -41,6 +41,5 @@ export async function main(ns: NS): Promise<void> {
     ns.tprint(`Launching script: ${hackingScript} with ${scriptNumThreads} threads`);
     ns.exec(hackingScript, 'home', scriptNumThreads);
   }
-
-  ns.singularity.universityCourse('Rothman University', 'Computer Science');
 }
+

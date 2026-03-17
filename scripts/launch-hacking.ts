@@ -62,7 +62,10 @@ export async function main(ns: NS): Promise<void> {
         ns.nuke(server);
 
         if (server == 'w0r1d_d43m0n') {
-          ns.tprint('\n#########################################\n#  w0r1d_d43m0n is now root-accessible  #\n#########################################');
+          ns.tprint(`
+            #########################################
+              w0r1d_d43m0n is now root-accessible
+            ########################################`);
         }
       }
 
