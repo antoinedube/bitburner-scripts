@@ -10,7 +10,6 @@ export async function main(ns: NS): Promise<void> {
     'manage-gang.js',
     'manage-factions.js',
     'buy-darkweb-programs.js',
-    /* 'manage-bladeburner.js' */
   ];
 
   if (ns.isRunning('hack-remote.js')) {
