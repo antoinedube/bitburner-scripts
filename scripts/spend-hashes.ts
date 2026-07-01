@@ -29,7 +29,7 @@ function selectRandomServer(ns: NS): string {
 
 export async function main(ns: NS): Promise<void> {
   ns.disableLog('ALL');
-  const SLEEP_DURATION = 1000;
+  const SLEEP_DURATION = 1000 * 5;
 
   /*
     const upgrades = ns.hacknet.getHashUpgrades();
@@ -50,46 +50,47 @@ export async function main(ns: NS): Promise<void> {
   */
 
   const ten_trillions = 10 * 1000 * 1000 * 1000 * 1000;  // k -> m -> g -> t
-  const hacking_level_boundary = 3000;
+  const hacking_level_boundary = 1000;
 
   while (true) {
     // Change probabilities based on hacking level
     // Low hacking level: more spending on money
     // High hacking level: more spending on reducing security / increasing money on servers
     const r = Math.random();
-    if (r < 0.2) {
-      const target = selectRandomServer(ns);
-      const minLevel = ns.getServerMinSecurityLevel(target);
-      if (minLevel > 1.0 && ns.getHackingLevel() > hacking_level_boundary) {
-        await spendHashesOnAction(ns, "Reduce Minimum Security", target, 1);
-        const minLevelAfter = ns.getServerMinSecurityLevel(target);
-        ns.print(`Reduced minimum security level on ${target} from ${ns.format.number(minLevel)} to ${ns.format.number(minLevelAfter)}`);
-      }
-    } else if (r < 0.4) {
-      const target = selectRandomServer(ns);
-      const maxMoney = ns.getServerMaxMoney(target);
-      if (maxMoney < ten_trillions && ns.getHackingLevel() > hacking_level_boundary) {
-        await spendHashesOnAction(ns, "Increase Maximum Money", target, 1);
-        const maxMoneyAfter = ns.getServerMaxMoney(target);
-        ns.print(`Increased maximum money on ${target} from ${ns.format.number(maxMoney)}\$ to ${ns.format.number(maxMoneyAfter)}\$`);
-      }
-    } else if (r < 0.6) {
-      if (ns.getHackingLevel() > hacking_level_boundary) {
-        await spendHashesOnAction(ns, "Improve Studying", "target", 1);
-        ns.print('Improved studying');
-      }
-    }
-    else {
-      const sellAmount = Math.floor(ns.hacknet.numHashes() / 5.0);
 
-      if (sellAmount < 1) {
-        await spendHashesOnAction(ns, "Sell for Money", "target", 1);
-        ns.print(`Sold hashes for money (${ns.format.number(1)})`);
+    if (ns.getHackingLevel() > hacking_level_boundary) {
+      if (r < 0.3) {
+        const target = selectRandomServer(ns);
+        const minLevel = ns.getServerMinSecurityLevel(target);
+        if (minLevel > 1.0 && ns.getHackingLevel() > hacking_level_boundary) {
+          await spendHashesOnAction(ns, "Reduce Minimum Security", target, 1);
+          const minLevelAfter = ns.getServerMinSecurityLevel(target);
+          ns.print(`Reduced minimum security level on ${target} from ${ns.format.number(minLevel)} to ${ns.format.number(minLevelAfter)}`);
+        }
+      } else if (r < 0.6) {
+        const target = selectRandomServer(ns);
+        const maxMoney = ns.getServerMaxMoney(target);
+        if (maxMoney < ten_trillions && ns.getHackingLevel() > hacking_level_boundary) {
+          await spendHashesOnAction(ns, "Increase Maximum Money", target, 1);
+          const maxMoneyAfter = ns.getServerMaxMoney(target);
+          ns.print(`Increased maximum money on ${target} from ${ns.format.number(maxMoney)}\$ to ${ns.format.number(maxMoneyAfter)}\$`);
+        }
       } else {
-        await spendHashesOnAction(ns, "Sell for Money", "target", sellAmount);
-        ns.print(`Sold hashes for money (${ns.format.number(sellAmount)})`);
+        if (ns.getHackingLevel() > hacking_level_boundary) {
+          await spendHashesOnAction(ns, "Improve Studying", "target", 1);
+          ns.print('Improved studying');
+        }
       }
     }
+
+    let sellAmount = Math.floor(ns.hacknet.numHashes() / 5.0);
+
+    if (sellAmount < 1) {
+      sellAmount = 1;
+    }
+
+    await spendHashesOnAction(ns, "Sell for Money", "target", sellAmount);
+    ns.print(`Sold hashes for money (${ns.format.number(sellAmount)})`);
 
     await ns.sleep(SLEEP_DURATION);
   }

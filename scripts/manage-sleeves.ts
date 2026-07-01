@@ -3,27 +3,28 @@ import { NS } from "@ns";
 async function setSleevesTask(ns: NS): Promise<void> {
   for (var i = 0; i < ns.sleeve.getNumSleeves(); i++) {
     const sleeve = ns.sleeve.getSleeve(i);
-    ns.print(`Sleeve ${i} has:`);
+    ns.print(`Sleeve ${i + 1} has:`);
     ns.print(`- sync=${sleeve.sync}`);
     ns.print(`- shock=${sleeve.shock}`);
-    ns.print(`--------------------------------------------`);
 
     if (sleeve.sync < 100) {
-      ns.print('Synchronize');
+      ns.print('\n--> Assigning to Synchronize');
       ns.sleeve.setToSynchronize(i);
     } else if (sleeve.shock > 0) {
-      ns.print('Shock recovery');
+      ns.print('\n--> Assigning to Shock recovery');
       ns.sleeve.setToShockRecovery(i);
     } else {
-      ns.print('Manual task');
       // Ref: https://github.com/danielyxie/bitburner/blob/dev/src/Enums.ts
       // ns.sleeve.setToCommitCrime(i, 'Assassination');
       // ns.sleeve.setToCommitCrime(i, 'Heist');
       // ns.sleeve.setToCommitCrime(i, 'Mug');
       // ns.sleeve.setToCommitCrime(i, 'Homicide');
       // ns.sleeve.setToUniversityCourse(i, 'Rothman University', 'Computer Science');
+      ns.print('\n--> Assigning to Study Algorithms');
       ns.sleeve.setToUniversityCourse(i, 'Rothman University', 'Algorithms');
     }
+
+    ns.print('--------------------------------------------\n');
   }
 }
 
