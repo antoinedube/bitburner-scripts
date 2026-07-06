@@ -25,7 +25,7 @@ export async function main(ns: NS) {
   ns.disableLog('ALL');
   const BUYING_DELAY = 250;
   const UPGRADING_DELAY = 1000;
-  const FOLLOWING_BATCH_DELAY = 1000 * 10;
+  const FOLLOWING_BATCH_DELAY = 1000 * 30;
   const HOME_SERVER = 'home';
 
   let targetRam = 4;
@@ -94,7 +94,7 @@ export async function main(ns: NS) {
         break;
       }
 
-      targetRam *= 2;
+      targetRam *= 4;
       ns.print(`New RAM target: ${targetRam}`);
       await ns.sleep(FOLLOWING_BATCH_DELAY);
     }

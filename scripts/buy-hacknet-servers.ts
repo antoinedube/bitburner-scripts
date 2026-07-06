@@ -2,35 +2,20 @@ import { NS } from '@ns';
 
 export async function main(ns: NS): Promise<void> {
   ns.disableLog('ALL');
-  const SLEEP_DURATION = 500;
+  const SLEEP_DURATION = 1000;
 
-  const hacknetConstants = ns.formulas.hacknetServers.constants();
-  /*
-      ns.formulas.hacknetServers.constants()
-      {
-          "HashesPerLevel":0.001,
-          "BaseCost":50000,
-          "RamBaseCost":200000,
-          "CoreBaseCost":1000000,
-          "CacheBaseCost":10000000,
-          "PurchaseMult":3.2,
-          "UpgradeLevelMult":1.1,
-          "UpgradeRamMult":1.4,
-          "UpgradeCoreMult":1.55,
-          "UpgradeCacheMult":1.85,
-          "MaxServers":20,
-          "MaxLevel":300,
-          "MaxRam":8192,
-          "MaxCores":128,
-          "MaxCache":15
-      }
-  */
+  // const hacknetConstants = ns.formulas.hacknetServers.constants();
+  // const targetCount = hacknetConstants['MaxServers'];
+  // const targetLevel = hacknetConstants['MaxLevel'];
+  // const targetRam = hacknetConstants['MaxRam'];
+  // const targetCore = hacknetConstants['MaxCores'];
+  // const targetCache = hacknetConstants['MaxCache'];
 
-  const targetCount = hacknetConstants['MaxServers'];
-  const targetLevel = hacknetConstants['MaxLevel'];
-  const targetRam = hacknetConstants['MaxRam'];
-  const targetCore = hacknetConstants['MaxCores'];
-  const targetCache = hacknetConstants['MaxCache'];
+  const targetCount = 150;
+  const targetLevel = 200;
+  const targetRam = 64;
+  const targetCore = 16;
+  const targetCache = 12;
 
   while (true) {
     if (ns.hacknet.numNodes() < targetCount) {

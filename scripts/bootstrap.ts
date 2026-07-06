@@ -6,10 +6,10 @@ export async function main(ns: NS): Promise<void> {
     'spend-hashes.js',
     'buy-hacknet-servers.js',
     'buy-servers.js',
-    'manage-sleeves.js',
-    'manage-gang.js',
-    'manage-factions.js',
-    'buy-darkweb-programs.js',
+    // 'manage-sleeves.js',
+    // 'manage-gang.js',
+    // 'manage-factions.js',
+    // 'buy-darkweb-programs.js',
   ];
 
   if (ns.isRunning('hack-remote.js')) {
