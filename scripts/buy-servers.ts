@@ -29,28 +29,33 @@ export async function main(ns: NS) {
   const HOME_SERVER = 'home';
 
   let targetRam = 4;
+  let serverCost = ns.cloud.getServerCost(targetRam);
+
   while (targetRam <= ns.cloud.getRamLimit()) {
     const maxNumberOfServers = ns.cloud.getServerLimit();
     const availableMoney = ns.getServerMoneyAvailable('home');
-    const serverCost = ns.cloud.getServerCost(targetRam);
 
     if (availableMoney < maxNumberOfServers * serverCost) {
       targetRam /= 2;
+      serverCost = ns.cloud.getServerCost(targetRam);
       break;
     }
 
     targetRam *= 2;
+    serverCost = ns.cloud.getServerCost(targetRam);
   }
 
   if (targetRam < 8) {
     targetRam = 8;
+    serverCost = ns.cloud.getServerCost(targetRam);
   }
 
   if (targetRam > ns.cloud.getRamLimit()) {
     targetRam = 0.5 * ns.cloud.getRamLimit();
+    serverCost = ns.cloud.getServerCost(targetRam);
   }
 
-  ns.print(`Starting target ram: ${targetRam}`);
+  ns.print(`Starting target ram: ${ns.format.ram(targetRam)}`);
 
   // Purchase missing servers
   while (true) {
@@ -64,9 +69,9 @@ export async function main(ns: NS) {
     }
 
     // If limit is not reached, buy server at current targetRam
-    if (ns.cloud.getServerCost(targetRam) < ns.getServerMoneyAvailable(HOME_SERVER)) {
+    if (serverCost < ns.getServerMoneyAvailable(HOME_SERVER)) {
       const name = `neighbor-${purchasedServers.length}`;
-      ns.print(`Purchasing server ${name}`);
+      ns.print(`Purchasing server ${name} with ${ns.format.ram(targetRam)} at ${ns.format.money(serverCost)}`);
       ns.cloud.purchaseServer(name, targetRam);
       launchScript(ns, 'hack-remote.js', name);
 
@@ -79,6 +84,7 @@ export async function main(ns: NS) {
   const purchasedServers = scanAllNetwork(ns).filter(name => name.startsWith('neighbor-'));
 
   targetRam *= 2;
+  serverCost = ns.cloud.getServerCost(targetRam);
   while (true) {
     // Stopping criteria
     let countServerWithTargetRam = 0;
@@ -95,7 +101,8 @@ export async function main(ns: NS) {
       }
 
       targetRam *= 4;
-      ns.print(`New RAM target: ${targetRam}`);
+      serverCost = ns.cloud.getServerCost(targetRam);
+      ns.print(`New RAM target: ${ns.format.ram(targetRam)} at ${ns.format.money(serverCost)}`);
       await ns.sleep(FOLLOWING_BATCH_DELAY);
     }
 

@@ -33,33 +33,33 @@ export async function main(ns: NS): Promise<void> {
     const filteredServerList = fullServerList.filter(name => !name.startsWith('neighbor-') && !name.startsWith('hacknet-'));
 
     for (const server of filteredServerList) {
-      ns.print(`Current server: ${server}`);
-
       const playerHackingLevel = ns.getHackingLevel();
       const hackingPrograms = buildHackingProgramList(ns);
       const numberAvailablePrograms = countAvailablePrograms(ns, hackingPrograms);
 
       // Check server level vs player level
       const machineHackingLevel = ns.getServerRequiredHackingLevel(server);
-      ns.print(`Level player: ${playerHackingLevel}, level machine: ${machineHackingLevel}`);
 
       // Check number of ports required vs number of programs available
       const requiredNumberOfPorts = ns.getServerNumPortsRequired(server);
-      ns.print(`Required num ports: ${requiredNumberOfPorts}, number available programs: ${numberAvailablePrograms}`);
 
       if (playerHackingLevel < machineHackingLevel) {
-        ns.print('----------\n');
         continue;
       }
 
       if (numberAvailablePrograms < requiredNumberOfPorts) {
-        ns.print('----------\n');
         continue;
       }
 
       if (!ns.hasRootAccess(server)) {
+        ns.print(`Current server: ${server}`);
+        ns.print(`Level player: ${playerHackingLevel}, level machine: ${machineHackingLevel}`);
+        ns.print(`Required num ports: ${requiredNumberOfPorts}, number available programs: ${numberAvailablePrograms}`);
+
         await openPorts(ns, hackingPrograms, server);
         ns.nuke(server);
+
+        ns.print(`hasRootAccess: ${ns.hasRootAccess(server)}`);
 
         if (server == 'w0r1d_d43m0n') {
           ns.tprint(`
@@ -69,14 +69,9 @@ export async function main(ns: NS): Promise<void> {
         }
       }
 
-      ns.print(`hasRootAccess: ${ns.hasRootAccess(server)}`);
-
       const isBackdoorInstalled = ns.getServer(server).backdoorInstalled;
-      ns.print(`isBackdoorInstalled: ${isBackdoorInstalled}`);
       if (ns.hasRootAccess(server) && !isBackdoorInstalled && server != 'w0r1d_d43m0n') {
-        ns.print("Build path");
         const path = await buildPath(ns, server);
-        ns.print("Done building path");
         for (let item of path) {
           // ns.print(`Connecting to ${item} from ${ns.singularity.getCurrentServer()}`);
           if (!ns.singularity.connect(item)) {
@@ -84,9 +79,9 @@ export async function main(ns: NS): Promise<void> {
           };
         }
 
-        ns.print('Installing backdoor');
         await ns.singularity.installBackdoor();
         ns.print('Backdoor installed');
+        ns.print('----------\n');
 
         for (let item of path.reverse()) {
           if (!ns.singularity.connect(item)) {
@@ -109,8 +104,6 @@ export async function main(ns: NS): Promise<void> {
       if (!ns.isRunning('hack-server.js', server)) {
         launchScript(ns, 'hack-server.js', server);
       }
-
-      ns.print('----------\n');
     }
 
     if (replace) {

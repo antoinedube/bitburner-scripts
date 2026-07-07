@@ -11,7 +11,9 @@ export async function main(ns: NS): Promise<void> {
   // const targetCore = hacknetConstants['MaxCores'];
   // const targetCache = hacknetConstants['MaxCache'];
 
-  const targetCount = 150;
+  // Target count
+  // 21*(hackingLevel / 100 as integer + 1)
+  const targetCount = 63;
   const targetLevel = 200;
   const targetRam = 64;
   const targetCore = 16;
@@ -90,6 +92,7 @@ export async function main(ns: NS): Promise<void> {
     }
 
     if (countCompletelyUpgraded == targetCount) {
+      // HERE ALSO
       break;
     }
 

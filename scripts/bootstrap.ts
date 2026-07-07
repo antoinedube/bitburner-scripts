@@ -3,7 +3,7 @@ import { NS } from '@ns';
 export async function main(ns: NS): Promise<void> {
   const scripts = [
     'launch-hacking.js',
-    'spend-hashes.js',
+    // 'spend-hashes.js',
     'buy-hacknet-servers.js',
     'buy-servers.js',
     // 'manage-sleeves.js',
