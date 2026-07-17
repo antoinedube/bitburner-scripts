@@ -22,7 +22,7 @@ async function buildNotOwnedAugmentationsList(ns: NS, faction: string, ownedAugm
 async function getNextFaction(ns: NS): Promise<string> {
   const factionsOfInterest: string[] = [
     'Netburners', 'CyberSec', 'NiteSec', 'The Black Hand', 'BitRunners',
-    'Sector-12', 'Slum Snakes', 'Volhaven', 'Chongqing',
+    'Sector-12', 'Slum Snakes', 'Volhaven', 'Chongqing', 'New Tokyo',
     'The Covenant', 'Illuminati', 'Daedalus'];
   const ownedAugmentations = ns.singularity.getOwnedAugmentations(true);
 
@@ -48,6 +48,12 @@ async function getNextFaction(ns: NS): Promise<string> {
         await ns.sleep(500);
       }
       ns.singularity.travelToCity('Chongqing');
+    } else if (faction == 'New Tokyo') { // For 'NutriGen Implant'
+      while (ns.getServerMoneyAvailable('home') < 200000) {
+        ns.print('Waiting for money for New Tokyo');
+        await ns.sleep(500);
+      }
+      ns.singularity.travelToCity('New Tokyo');
     }
 
     // For required skills other than hacking
@@ -172,7 +178,8 @@ export async function main(ns: NS): Promise<void> {
   const nextFaction = await getNextFaction(ns);
 
   if (nextFaction === 'NO-FACTION-LEFT') {
-    await waitAndDestroyWorldDaemon(ns);
+    // await waitAndDestroyWorldDaemon(ns);
+    return;
   }
 
   await joinAndWorkForFaction(ns, nextFaction);

@@ -100,7 +100,7 @@ export async function main(ns: NS) {
         break;
       }
 
-      targetRam *= 4;
+      targetRam *= 2;
       serverCost = ns.cloud.getServerCost(targetRam);
       ns.print(`New RAM target: ${ns.format.ram(targetRam)} at ${ns.format.money(serverCost)}`);
       await ns.sleep(FOLLOWING_BATCH_DELAY);

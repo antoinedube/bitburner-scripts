@@ -13,11 +13,12 @@ export async function main(ns: NS): Promise<void> {
 
   // Target count
   // 21*(hackingLevel / 100 as integer + 1)
-  const targetCount = 63;
-  const targetLevel = 200;
-  const targetRam = 64;
-  const targetCore = 16;
-  const targetCache = 12;
+
+  const targetCount = 72;
+  const targetLevel = 300;
+  const targetRam = 8192;
+  const targetCore = 128;
+  const targetCache = 15;
 
   while (true) {
     if (ns.hacknet.numNodes() < targetCount) {

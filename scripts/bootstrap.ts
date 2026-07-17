@@ -3,13 +3,13 @@ import { NS } from '@ns';
 export async function main(ns: NS): Promise<void> {
   const scripts = [
     'launch-hacking.js',
-    // 'spend-hashes.js',
+    'spend-hashes.js',
     'buy-hacknet-servers.js',
     'buy-servers.js',
     // 'manage-sleeves.js',
     // 'manage-gang.js',
-    // 'manage-factions.js',
-    // 'buy-darkweb-programs.js',
+    'manage-factions.js',
+    'buy-darkweb-programs.js',
   ];
 
   if (ns.isRunning('hack-remote.js')) {
