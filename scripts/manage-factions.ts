@@ -22,7 +22,8 @@ async function buildNotOwnedAugmentationsList(ns: NS, faction: string, ownedAugm
 async function getNextFaction(ns: NS): Promise<string> {
   const factionsOfInterest: string[] = [
     'Netburners', 'CyberSec', 'NiteSec', 'The Black Hand', 'BitRunners',
-    'Sector-12', 'Slum Snakes', 'Volhaven', 'Chongqing', 'New Tokyo',
+    'Sector-12', 'Slum Snakes', 'Volhaven', 'Chongqing',
+    'New Tokyo', 'Tetrads', 'Tian Di Hui',
     'The Covenant', 'Illuminati', 'Daedalus'];
   const ownedAugmentations = ns.singularity.getOwnedAugmentations(true);
 

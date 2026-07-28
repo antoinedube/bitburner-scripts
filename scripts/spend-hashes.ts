@@ -29,7 +29,7 @@ function selectRandomServer(ns: NS): string {
 
 export async function main(ns: NS): Promise<void> {
   ns.disableLog('ALL');
-  const SLEEP_DURATION = 1000 * 5;
+  const SLEEP_DURATION = 1000;
 
   /*
     const upgrades = ns.hacknet.getHashUpgrades();
@@ -58,29 +58,34 @@ export async function main(ns: NS): Promise<void> {
     // High hacking level: more spending on reducing security / increasing money on servers
     const r = Math.random();
 
-    if (ns.getHackingLevel() > hacking_level_boundary) {
-      if (r < 0.3) {
-        const target = selectRandomServer(ns);
-        const minLevel = ns.getServerMinSecurityLevel(target);
-        if (minLevel > 1.0 && ns.getHackingLevel() > hacking_level_boundary) {
-          await spendHashesOnAction(ns, "Reduce Minimum Security", target, 1);
-          const minLevelAfter = ns.getServerMinSecurityLevel(target);
-          ns.print(`Reduced minimum security level on ${target} from ${ns.format.number(minLevel)} to ${ns.format.number(minLevelAfter)}`);
-        }
-      } else if (r < 0.6) {
-        const target = selectRandomServer(ns);
-        const maxMoney = ns.getServerMaxMoney(target);
-        if (maxMoney < ten_trillions && ns.getHackingLevel() > hacking_level_boundary) {
-          await spendHashesOnAction(ns, "Increase Maximum Money", target, 1);
-          const maxMoneyAfter = ns.getServerMaxMoney(target);
-          ns.print(`Increased maximum money on ${target} from ${ns.format.number(maxMoney)}\$ to ${ns.format.number(maxMoneyAfter)}\$`);
-        }
-      } else {
-        if (ns.getHackingLevel() > hacking_level_boundary) {
-          await spendHashesOnAction(ns, "Improve Studying", "target", 1);
-          ns.print('Improved studying');
-        }
-      }
+    if (hacking_level_boundary < ns.getHackingLevel()) {
+      // if (r < 0.95) {
+      //   await spendHashesOnAction(ns, "Improve Gym Training", "target", 1);
+      //   ns.print('Improved gym training');
+      // }
+
+      //   if (r < 0.3) {
+      //     const target = selectRandomServer(ns);
+      //     const minLevel = ns.getServerMinSecurityLevel(target);
+      //     if (minLevel > 1.0 && ns.getHackingLevel() > hacking_level_boundary) {
+      //       await spendHashesOnAction(ns, "Reduce Minimum Security", target, 1);
+      //       const minLevelAfter = ns.getServerMinSecurityLevel(target);
+      //       ns.print(`Reduced minimum security level on ${target} from ${ns.format.number(minLevel)} to ${ns.format.number(minLevelAfter)}`);
+      //     }
+      //   } else if (r < 0.6) {
+      //     const target = selectRandomServer(ns);
+      //     const maxMoney = ns.getServerMaxMoney(target);
+      //     if (maxMoney < ten_trillions && ns.getHackingLevel() > hacking_level_boundary) {
+      //       await spendHashesOnAction(ns, "Increase Maximum Money", target, 1);
+      //       const maxMoneyAfter = ns.getServerMaxMoney(target);
+      //       ns.print(`Increased maximum money on ${target} from ${ns.format.number(maxMoney)}\$ to ${ns.format.number(maxMoneyAfter)}\$`);
+      //     }
+      //   } else {
+      //     if (ns.getHackingLevel() > hacking_level_boundary) {
+      //       await spendHashesOnAction(ns, "Improve Studying", "target", 1);
+      //       ns.print('Improved studying');
+      //     }
+      //   }
     }
 
     let sellAmount = Math.floor(ns.hacknet.numHashes() / 5.0);
