@@ -6,16 +6,22 @@ export function scanAllNetwork(ns: NS): string[] {
 
   while (serversToScan.length > 0) {
     const server = serversToScan.pop();
-    const neighbors = ns.scan(server);
 
-    for (const neighbor of neighbors) {
-      if (server == 'darkweb') {
-        ns.print("======================================================\nNeighbor of darkweb: {neighbor}\n======================================================");
+    try {
+      const neighbors = ns.scan(server);
+
+      for (const neighbor of neighbors) {
+        if (server == 'darkweb') {
+          ns.print("======================================================\nNeighbor of darkweb: {neighbor}\n======================================================");
+        }
+        if (neighbor != 'home' && !serverList.includes(neighbor)) {
+          serversToScan.push(neighbor);
+          serverList.push(neighbor);
+        }
       }
-      if (neighbor != 'home' && !serverList.includes(neighbor)) {
-        serversToScan.push(neighbor);
-        serverList.push(neighbor);
-      }
+    }
+    catch (error) {
+      ns.print(`Received error in scan: ${error}`)
     }
   }
 
@@ -39,21 +45,33 @@ export async function buildPath(ns: NS, server: string): Promise<string[]> {
     }
 
     const lastItem = currentPath.pop();
-    const neighbors = ns.scan(lastItem);
-    const neighborsWithoutServers = neighbors.filter((name) => {
-      return !name.startsWith('neighbor-') && !name.startsWith('hacknet-') && !currentPath.includes(name)
-    });
 
-    for (let neighbor of neighborsWithoutServers) {
-      let newPath = currentPath.slice();
-      newPath.push(lastItem);
-      newPath.push(neighbor);
+    if (lastItem === undefined) {
+      await ns.sleep(250);
+      continue;
+    }
 
-      if (neighbor == server) {
-        return newPath;
+    try {
+
+      const neighbors = ns.scan(lastItem);
+      const neighborsWithoutServers = neighbors.filter((name) => {
+        return !name.startsWith('neighbor-') && !name.startsWith('hacknet-') && !currentPath.includes(name)
+      });
+
+      for (let neighbor of neighborsWithoutServers) {
+        let newPath = currentPath.slice();
+        newPath.push(lastItem);
+        newPath.push(neighbor);
+
+        if (neighbor == server) {
+          return newPath;
+        }
+
+        pathList.unshift(newPath);
       }
-
-      pathList.unshift(newPath);
+    }
+    catch (error) {
+      ns.print(`Received error in scan (build list): ${error}`)
     }
 
     await ns.sleep(250);  // Just so that the editor does not complain...

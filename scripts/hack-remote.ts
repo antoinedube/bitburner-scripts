@@ -6,13 +6,18 @@ function buildServerList(ns: NS): string[] {
 
   while (serversToScan.length > 0) {
     const server = serversToScan.pop();
-    const neighbors = ns.scan(server);
-
-    for (const neighbor of neighbors) {
-      if (neighbor != 'home' && !serverList.includes(neighbor)) {
-        serversToScan.push(neighbor);
-        serverList.push(neighbor);
+    try {
+      ns.print(`Scanning: ${server}`);
+      const neighbors = ns.scan(server);
+      for (const neighbor of neighbors) {
+        if (neighbor != 'home' && !serverList.includes(neighbor)) {
+          serversToScan.push(neighbor);
+          serverList.push(neighbor);
+        }
       }
+    }
+    catch (error) {
+      ns.print(`Received error: ${error}`)
     }
   }
 
@@ -47,35 +52,42 @@ export async function main(ns: NS): Promise<void> {
   ns.enableLog('hack');
   ns.enableLog('weaken');
 
-  const runningScript = ns.getRunningScript();
-  const numThreads = runningScript!.threads;
+  try {
 
-  while (true) {
-    await ns.sleep(500);
+    const runningScript = ns.getRunningScript();
+    const numThreads = runningScript!.threads;
 
-    const fullServerList = buildServerList(ns);
-    const filteredServerList = fullServerList.filter(name => !name.startsWith('neighbor-') && !name.startsWith('hacknet-'));
+    while (true) {
+      await ns.sleep(500);
 
-    const serverIndex = Math.floor(Math.random() * filteredServerList.length);
-    const server = filteredServerList[serverIndex];
+      const fullServerList = buildServerList(ns);
+      const filteredServerList = fullServerList.filter(name => !name.startsWith('neighbor-') && !name.startsWith('hacknet-'));
 
-    if (!isAccessible(ns, server)) {
-      continue;
+      const serverIndex = Math.floor(Math.random() * filteredServerList.length);
+      const server = filteredServerList[serverIndex];
+
+      if (!isAccessible(ns, server)) {
+        continue;
+      }
+
+      if (!hasSecurityLevel(ns, server)) {
+        await ns.weaken(server, { threads: numThreads });
+        ns.print(`[${server}] Security level weakened to ${ns.getServerSecurityLevel(server).toFixed(2)}`);
+        continue;
+      }
+
+      if (!hasMoney(ns, server)) {
+        await ns.grow(server, { threads: numThreads });
+        ns.print(`[${server}] Money grown to ${ns.getServerMoneyAvailable(server).toFixed(2)}`);
+        continue;
+      }
+
+      ns.print(`[${server}] Hacking`);
+      await ns.hack(server, { threads: numThreads });
     }
-
-    if (!hasSecurityLevel(ns, server)) {
-      await ns.weaken(server, { threads: numThreads });
-      ns.print(`[${server}] Security level weakened to ${ns.getServerSecurityLevel(server).toFixed(2)}`);
-      continue;
-    }
-
-    if (!hasMoney(ns, server)) {
-      await ns.grow(server, { threads: numThreads });
-      ns.print(`[${server}] Money grown to ${ns.getServerMoneyAvailable(server).toFixed(2)}`);
-      continue;
-    }
-
-    ns.print(`[${server}] Hacking`);
-    await ns.hack(server, { threads: numThreads });
+  }
+  catch (error) {
+    ns.print(`Caught global error: ${error}`);
+    return;
   }
 }

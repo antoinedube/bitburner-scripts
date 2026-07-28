@@ -28,88 +28,94 @@ export async function main(ns: NS): Promise<void> {
 
   const replace = false;  // Replace an existing script
 
-  while (true) {
-    const fullServerList = scanAllNetwork(ns);
-    const filteredServerList = fullServerList.filter(name => !name.startsWith('neighbor-') && !name.startsWith('hacknet-'));
+  try {
+    while (true) {
+      const fullServerList = scanAllNetwork(ns);
+      const filteredServerList = fullServerList.filter(name => !name.startsWith('neighbor-') && !name.startsWith('hacknet-'));
 
-    for (const server of filteredServerList) {
-      const playerHackingLevel = ns.getHackingLevel();
-      const hackingPrograms = buildHackingProgramList(ns);
-      const numberAvailablePrograms = countAvailablePrograms(ns, hackingPrograms);
+      for (const server of filteredServerList) {
+        const playerHackingLevel = ns.getHackingLevel();
+        const hackingPrograms = buildHackingProgramList(ns);
+        const numberAvailablePrograms = countAvailablePrograms(ns, hackingPrograms);
 
-      // Check server level vs player level
-      const machineHackingLevel = ns.getServerRequiredHackingLevel(server);
+        // Check server level vs player level
+        const machineHackingLevel = ns.getServerRequiredHackingLevel(server);
 
-      // Check number of ports required vs number of programs available
-      const requiredNumberOfPorts = ns.getServerNumPortsRequired(server);
+        // Check number of ports required vs number of programs available
+        const requiredNumberOfPorts = ns.getServerNumPortsRequired(server);
 
-      if (playerHackingLevel < machineHackingLevel) {
-        continue;
-      }
+        if (playerHackingLevel < machineHackingLevel) {
+          continue;
+        }
 
-      if (numberAvailablePrograms < requiredNumberOfPorts) {
-        continue;
-      }
+        if (numberAvailablePrograms < requiredNumberOfPorts) {
+          continue;
+        }
 
-      if (!ns.hasRootAccess(server)) {
-        ns.print(`Current server: ${server}`);
-        ns.print(`Level player: ${playerHackingLevel}, level machine: ${machineHackingLevel}`);
-        ns.print(`Required num ports: ${requiredNumberOfPorts}, number available programs: ${numberAvailablePrograms}`);
+        if (!ns.hasRootAccess(server)) {
+          ns.print(`Current server: ${server}`);
+          ns.print(`Level player: ${playerHackingLevel}, level machine: ${machineHackingLevel}`);
+          ns.print(`Required num ports: ${requiredNumberOfPorts}, number available programs: ${numberAvailablePrograms}`);
 
-        await openPorts(ns, hackingPrograms, server);
-        ns.nuke(server);
+          await openPorts(ns, hackingPrograms, server);
+          ns.nuke(server);
 
-        ns.print(`hasRootAccess: ${ns.hasRootAccess(server)}`);
+          ns.print(`hasRootAccess: ${ns.hasRootAccess(server)}`);
 
-        if (server == 'w0r1d_d43m0n') {
-          ns.tprint(`
+          if (server == 'w0r1d_d43m0n') {
+            ns.tprint(`
             #########################################
               w0r1d_d43m0n is now root-accessible
             ########################################`);
-        }
-      }
-
-      const isBackdoorInstalled = ns.getServer(server).backdoorInstalled;
-      if (ns.hasRootAccess(server) && !isBackdoorInstalled && server != 'w0r1d_d43m0n') {
-        const path = await buildPath(ns, server);
-        for (let item of path) {
-          // ns.print(`Connecting to ${item} from ${ns.singularity.getCurrentServer()}`);
-          if (!ns.singularity.connect(item)) {
-            ns.print(`Error while connecting to ${item}`);
-          };
+          }
         }
 
-        await ns.singularity.installBackdoor();
-        ns.print('Backdoor installed');
-        ns.print('----------\n');
+        const isBackdoorInstalled = ns.getServer(server).backdoorInstalled;
+        if (ns.hasRootAccess(server) && !isBackdoorInstalled && server != 'w0r1d_d43m0n') {
+          const path = await buildPath(ns, server);
+          for (let item of path) {
+            // ns.print(`Connecting to ${item} from ${ns.singularity.getCurrentServer()}`);
+            if (!ns.singularity.connect(item)) {
+              ns.print(`Error while connecting to ${item}`);
+            };
+          }
 
-        for (let item of path.reverse()) {
-          if (!ns.singularity.connect(item)) {
-            ns.print(`Error while connecting to ${item}`);
-          };
+          await ns.singularity.installBackdoor();
+          ns.print('Backdoor installed');
+          ns.print('----------\n');
+
+          for (let item of path.reverse()) {
+            if (!ns.singularity.connect(item)) {
+              ns.print(`Error while connecting to ${item}`);
+            };
+          }
+        }
+
+        if (replace) {
+          ns.killall(server);
+        }
+
+        if (replace || !ns.fileExists('hack-server.js', server)) {
+          const scpStatus = ns.scp('hack-server.js', server, 'home');
+          if (!scpStatus) {
+            ns.print(`Failed to copy hack-server.js on ${server}`);
+          }
+        }
+
+        if (!ns.isRunning('hack-server.js', server)) {
+          launchScript(ns, 'hack-server.js', server);
         }
       }
 
       if (replace) {
-        ns.killall(server);
+        break;
       }
 
-      if (replace || !ns.fileExists('hack-server.js', server)) {
-        const scpStatus = ns.scp('hack-server.js', server, 'home');
-        if (!scpStatus) {
-          ns.print(`Failed to copy hack-server.js on ${server}`);
-        }
-      }
-
-      if (!ns.isRunning('hack-server.js', server)) {
-        launchScript(ns, 'hack-server.js', server);
-      }
+      await ns.sleep(SLEEP_DURATION);
     }
-
-    if (replace) {
-      break;
-    }
-
-    await ns.sleep(SLEEP_DURATION);
+  }
+  catch (error) {
+    ns.print(`Caught global error: ${error}`);
+    return
   }
 }

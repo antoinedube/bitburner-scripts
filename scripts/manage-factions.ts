@@ -1,11 +1,11 @@
-import { NS } from '@ns';
+import { FactionName, NS } from '@ns';
 
 interface augmentation {
   name: string,
   price: number
 }
 
-async function buildNotOwnedAugmentationsList(ns: NS, faction: string, ownedAugmentations: string[]): Promise<string[]> {
+async function buildNotOwnedAugmentationsList(ns: NS, faction: FactionName, ownedAugmentations: string[]): Promise<string[]> {
   const augmentations: string[] = ns.singularity.getAugmentationsFromFaction(faction);
   const notOwnedAugmentations: string[] = [];
   for (const augmentation of augmentations) {
@@ -19,12 +19,13 @@ async function buildNotOwnedAugmentationsList(ns: NS, faction: string, ownedAugm
   return notOwnedAugmentations;
 }
 
-async function getNextFaction(ns: NS): Promise<string> {
-  const factionsOfInterest: string[] = [
+async function getNextFaction(ns: NS): Promise<FactionName> {
+  const factionsOfInterest: FactionName[] = [
     'Netburners', 'CyberSec', 'NiteSec', 'The Black Hand', 'BitRunners',
     'Sector-12', 'Slum Snakes', 'Volhaven', 'Chongqing',
     'New Tokyo', 'Tetrads', 'Tian Di Hui',
     'The Covenant', 'Illuminati', 'Daedalus'];
+
   const ownedAugmentations = ns.singularity.getOwnedAugmentations(true);
 
   for (const faction of factionsOfInterest) {
@@ -79,10 +80,10 @@ async function getNextFaction(ns: NS): Promise<string> {
     return faction;
   }
 
-  return 'NO-FACTION-LEFT';
+  throw new Error('No faction left');
 }
 
-async function waitForReputation(ns: NS, faction: string, augmentation: string): Promise<void> {
+async function waitForReputation(ns: NS, faction: FactionName, augmentation: string): Promise<void> {
   while (ns.singularity.getAugmentationRepReq(augmentation) > ns.singularity.getFactionRep(faction)) {
     const reputationRequirement = ns.singularity.getAugmentationRepReq(augmentation);
     const formattedReputationRequirement = ns.format.number(reputationRequirement);
@@ -100,7 +101,7 @@ async function waitForMoney(ns: NS, augmentation: string): Promise<void> {
   }
 }
 
-async function purchaseAugmentations(ns: NS, faction: string): Promise<void> {
+async function purchaseAugmentations(ns: NS, faction: FactionName): Promise<void> {
   while (true) {
     const ownedAugmentations = ns.singularity.getOwnedAugmentations(true);
     const notOwnedAugmentations = await buildNotOwnedAugmentationsList(ns, faction, ownedAugmentations);
@@ -144,7 +145,7 @@ async function purchaseAugmentations(ns: NS, faction: string): Promise<void> {
   }
 }
 
-async function joinAndWorkForFaction(ns: NS, faction: string): Promise<void> {
+async function joinAndWorkForFaction(ns: NS, faction: FactionName): Promise<void> {
   ns.print(`Next faction: ${JSON.stringify(faction, null, 4)}`);
   ns.singularity.joinFaction(faction);
 
@@ -155,37 +156,37 @@ async function joinAndWorkForFaction(ns: NS, faction: string): Promise<void> {
   }
 }
 
-async function waitAndDestroyWorldDaemon(ns: NS): Promise<void> {
-  ns.print('No faction left');
-
-  await ns.sleep(5000);
-  ns.singularity.travelToCity('Sector-12');
-  ns.singularity.universityCourse('Rothman University', 'Algorithms');
-
-  const worldDaemon = 'w0r1d_d43m0n';
-  ns.print(`Waiting for root access on ${worldDaemon}`);
-  while (!ns.hasRootAccess(worldDaemon)) {
-    await ns.sleep(5000);
-  }
-
-  ns.print(`${worldDaemon} is root accessible`);
-  ns.tprint(`${worldDaemon} is root accessible`);
-  ns.singularity.destroyW0r1dD43m0n(12, 'bootstrap.js');
-}
+// async function waitAndDestroyWorldDaemon(ns: NS): Promise<void> {
+//   ns.print('No faction left');
+//
+//   await ns.sleep(5000);
+//   ns.singularity.travelToCity('Sector-12');
+//   ns.singularity.universityCourse('Rothman University', 'Algorithms');
+//
+//   const worldDaemon = 'w0r1d_d43m0n';
+//   ns.print(`Waiting for root access on ${worldDaemon}`);
+//   while (!ns.hasRootAccess(worldDaemon)) {
+//     await ns.sleep(5000);
+//   }
+//
+//   ns.print(`${worldDaemon} is root accessible`);
+//   ns.tprint(`${worldDaemon} is root accessible`);
+//   ns.singularity.destroyW0r1dD43m0n(12, 'bootstrap.js');
+// }
 
 export async function main(ns: NS): Promise<void> {
   ns.disableLog('ALL');
 
-  const nextFaction = await getNextFaction(ns);
-
-  if (nextFaction === 'NO-FACTION-LEFT') {
-    // await waitAndDestroyWorldDaemon(ns);
+  try {
+    const nextFaction = await getNextFaction(ns);
+    await joinAndWorkForFaction(ns, nextFaction);
+    await purchaseAugmentations(ns, nextFaction);
+  }
+  catch (error) {
+    ns.print(`Received: ${error}`)
     return;
   }
 
-  await joinAndWorkForFaction(ns, nextFaction);
-
-  await purchaseAugmentations(ns, nextFaction);
 
   ns.singularity.installAugmentations('bootstrap.js');
 }
