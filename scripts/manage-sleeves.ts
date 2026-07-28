@@ -19,9 +19,9 @@ async function setSleevesTask(ns: NS): Promise<void> {
       // ns.sleeve.setToCommitCrime(i, 'Heist');
       // ns.sleeve.setToCommitCrime(i, 'Mug');
       // ns.sleeve.setToCommitCrime(i, 'Homicide');
+      // ns.sleeve.setToUniversityCourse(i, 'Rothman University', 'Algorithms');
       ns.sleeve.setToUniversityCourse(i, 'Rothman University', 'Computer Science');
       ns.print('\n--> Assigning to Study Computer Science');
-      // ns.sleeve.setToUniversityCourse(i, 'Rothman University', 'Algorithms');
     }
 
     ns.print('--------------------------------------------\n');
