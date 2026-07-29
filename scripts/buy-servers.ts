@@ -1,7 +1,14 @@
 import { NS } from '@ns';
 import { scanAllNetwork } from "./scan";
 
-function launchScript(ns: NS, scriptName: string, server: string) {
+function launchScript(ns: NS, server: string) {
+  let scriptName;
+  if (server.endsWith('0')) {
+    scriptName = 'share-ram.js';
+  } else {
+    scriptName = 'hack-remote.js';
+  }
+
   const scpStatus = ns.scp(scriptName, server, 'home');
   if (!scpStatus) {
     ns.print('Failed to copy ' + scriptName + ' on ' + server);
@@ -75,7 +82,7 @@ export async function main(ns: NS) {
         const name = `neighbor-${purchasedServers.length}`;
         ns.print(`Purchasing server ${name} with ${ns.format.ram(targetRam)} at ${ns.format.money(serverCost)}`);
         ns.cloud.purchaseServer(name, targetRam);
-        launchScript(ns, 'hack-remote.js', name);
+        launchScript(ns, name);
 
         purchasedServers.push(name);
       }
@@ -116,7 +123,7 @@ export async function main(ns: NS) {
           if (upgradeCost < moneyAvailable) {
             if (ns.cloud.upgradeServer(purchasedServer, targetRam)) {
               ns.print(`Upgraded ${purchasedServer} to ${ns.format.ram(targetRam)} with cost of ${ns.format.number(upgradeCost)}\$`);
-              launchScript(ns, 'hack-remote.js', purchasedServer);
+              launchScript(ns, purchasedServer);
             } else {
               ns.print(`Error while upgrading purchased server ${purchasedServer} to ${ns.format.ram(targetRam)}`);
             }
