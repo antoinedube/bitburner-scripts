@@ -2,23 +2,23 @@ import { NS } from '@ns';
 
 export async function main(ns: NS): Promise<void> {
   ns.disableLog('ALL');
-  const SLEEP_DURATION = 500;
+  const SLEEP_DURATION = 300;
 
-  const hacknetConstants = ns.formulas.hacknetServers.constants();
-  const targetCount = hacknetConstants['MaxServers'];
-  const targetLevel = hacknetConstants['MaxLevel'];
-  const targetRam = hacknetConstants['MaxRam'];
-  const targetCore = hacknetConstants['MaxCores'];
-  const targetCache = hacknetConstants['MaxCache'];
+  // const hacknetConstants = ns.formulas.hacknetServers.constants();
+  // const targetCount = hacknetConstants['MaxServers'];
+  // const targetLevel = hacknetConstants['MaxLevel'];
+  // const targetRam = hacknetConstants['MaxRam'];
+  // const targetCore = hacknetConstants['MaxCores'];
+  // const targetCache = hacknetConstants['MaxCache'];
 
   // Target count
   // 21*(hackingLevel / 100 as integer + 1)
 
-  // const targetCount = 72;
-  // const targetLevel = 300;
-  // const targetRam = 8192;
-  // const targetCore = 128;
-  // const targetCache = 15;
+  const targetCount = 90;
+  const targetLevel = 300;
+  const targetRam = 8192;
+  const targetCore = 128;
+  const targetCache = 15;
 
   try {
 
