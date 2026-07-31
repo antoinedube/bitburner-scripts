@@ -62,7 +62,7 @@ async function getNextFaction(ns: NS): Promise<FactionName> {
     if (['The Covenant', 'Illuminati', 'Daedalus'].includes(faction)) {  // To increase combat stat
       ns.singularity.joinFaction('The Black Hand');
       ns.singularity.workForFaction('The Black Hand', 'field');
-    } else if (['Slum Snakes'].includes(faction)) {  // To lower player karma
+    } else if (['Slum Snakes', 'Tetrads'].includes(faction)) {  // To lower player karma
       ns.singularity.commitCrime("Mug");
     }
 
