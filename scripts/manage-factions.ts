@@ -149,7 +149,7 @@ async function joinAndWorkForFaction(ns: NS, faction: FactionName): Promise<void
   ns.print(`Next faction: ${JSON.stringify(faction, null, 4)}`);
   ns.singularity.joinFaction(faction);
 
-  if (['Sector-12', 'Slum Snakes'].includes(faction)) {
+  if (['Sector-12', 'Slum Snakes', 'Tetrads'].includes(faction)) {
     ns.singularity.workForFaction(faction, 'field');
   } else {
     ns.singularity.workForFaction(faction, 'hacking');

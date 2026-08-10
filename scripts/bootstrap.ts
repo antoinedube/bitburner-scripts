@@ -6,8 +6,6 @@ export async function main(ns: NS): Promise<void> {
     'spend-hashes.js',
     'buy-hacknet-servers.js',
     'buy-servers.js',
-    // 'manage-sleeves.js',
-    // 'manage-gang.js',
     'manage-factions.js',
     'buy-darkweb-programs.js',
   ];
@@ -39,6 +37,10 @@ export async function main(ns: NS): Promise<void> {
   if (scriptNumThreads > 0) {
     ns.tprint(`Launching script: ${hackingScript} with ${scriptNumThreads} threads`);
     ns.exec(hackingScript, 'home', scriptNumThreads);
+  }
+
+  if (ns.singularity) {
+    ns.singularity.universityCourse('Rothman University', 'Computer Science');
   }
 }
 
