@@ -5,7 +5,6 @@ async function spendHashesOnAction(ns: NS, action: string, target: string, amoun
   const SLEEP_DURATION = 1000;
 
   if (ns.hacknet.hashCapacity() <= ns.hacknet.hashCost(action, amount)) {
-    ns.print(`Hash capacity is too low for ${action}`);
     return;
   }
 
@@ -50,7 +49,7 @@ export async function main(ns: NS): Promise<void> {
   */
 
   const ten_trillions = 10 * 1000 * 1000 * 1000 * 1000;  // k -> m -> g -> t
-  const hacking_level_boundary = 2500;
+  const hacking_level_boundary = 1500;
   const hacknetConstants = ns.formulas.hacknetServers.constants();
 
   try {
@@ -80,8 +79,8 @@ export async function main(ns: NS): Promise<void> {
         }
       }
 
-      // Clamp to [1, 500]
-      const sellAmount = Math.min(Math.max(1, Math.floor(ns.hacknet.numHashes() / 5.0)), 500);
+      // Clamp to [1, 50]
+      const sellAmount = Math.min(Math.max(1, Math.floor(ns.hacknet.numHashes() / 5.0)), 50);
 
       await spendHashesOnAction(ns, "Sell for Money", "target", sellAmount);
       ns.print(`Sold hashes for money (${ns.format.number(sellAmount)})`);

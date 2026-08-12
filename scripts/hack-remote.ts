@@ -7,7 +7,6 @@ function buildServerList(ns: NS): string[] {
   while (serversToScan.length > 0) {
     const server = serversToScan.pop();
     try {
-      ns.print(`Scanning: ${server}`);
       const neighbors = ns.scan(server);
       for (const neighbor of neighbors) {
         if (neighbor != 'home' && !serverList.includes(neighbor)) {
