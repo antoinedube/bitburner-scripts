@@ -24,7 +24,8 @@ export async function main(ns: NS): Promise<void> {
   }
 
   while (true) {
-    const allHackingPrograms = ns.singularity.getDarkwebPrograms();
+    // const allHackingPrograms = ns.singularity.getDarkwebPrograms();
+    const allHackingPrograms = ["BruteSSH.exe", "FTPCrack.exe", "relaySMTP.exe", "HTTPWorm.exe", "SQLInject.exe"];
     const purchasedHackingPrograms = allHackingPrograms.filter((program) => ns.fileExists(program));
     const hackingProgramsToPurchase = allHackingPrograms.filter((program) => !ns.fileExists(program));
 
