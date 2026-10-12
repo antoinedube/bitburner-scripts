@@ -11,11 +11,11 @@ export async function main(ns: NS): Promise<void> {
       const sleeve = ns.sleeve.getSleeve(i);
 
       if (sleeve.sync < 100) {
-        ns.print(`Sleeve ${i + 1} has: sync=${sleeve.sync} and shock=${sleeve.shock} --> Assigning to Synchronize`);
+        ns.print(`Sleeve ${i + 1} has: sync=${ns.format.number(sleeve.sync)} and shock=${ns.format.number(sleeve.shock)} --> Assigning to Synchronize`);
         ns.sleeve.setToSynchronize(i);
         sync_shock_status_list.push(false);
       } else if (sleeve.shock > 0) {
-        ns.print(`Sleeve ${i + 1} has: sync=${sleeve.sync} and shock=${sleeve.shock} --> Assigning to Shock Recovery`);
+        ns.print(`Sleeve ${i + 1} has: sync=${ns.format.number(sleeve.sync)} and shock=${ns.format.number(sleeve.shock)} --> Assigning to Shock Recovery`);
         ns.sleeve.setToShockRecovery(i);
         sync_shock_status_list.push(false);
       } else {
@@ -32,12 +32,12 @@ export async function main(ns: NS): Promise<void> {
   }
 
   // Hacking
-  const HACKING_STAT_TARGET = 250;
+  const HACKING_STAT_TARGET = 500;
   while (true) {
     const player = ns.getPlayer();
     const skills = player['skills'];
     const hacking = skills['hacking'];
-    ns.print(`Hacking level: ${hacking} vs ${HACKING_STAT_TARGET}`);
+    ns.print(`Hacking level: ${ns.format.number(hacking)} vs ${HACKING_STAT_TARGET}`);
 
     if (HACKING_STAT_TARGET <= hacking) {
       break;
@@ -64,7 +64,7 @@ export async function main(ns: NS): Promise<void> {
         break;
       }
 
-      ns.print(`Strength is ${skill_value}, training until: ${combat_stats_target}`);
+      ns.print(`Strength is ${ns.format.number(skill_value)}, training until: ${combat_stats_target}`);
       for (let i = 0; i < ns.sleeve.getNumSleeves(); i++) {
         ns.sleeve.setToGymWorkout(i, 'Powerhouse Gym', 'str');
       }
@@ -82,7 +82,7 @@ export async function main(ns: NS): Promise<void> {
         break;
       }
 
-      ns.print(`Defense is ${skill_value}, training until: ${combat_stats_target}`);
+      ns.print(`Defense is ${ns.format.number(skill_value)}, training until: ${combat_stats_target}`);
       for (let i = 0; i < ns.sleeve.getNumSleeves(); i++) {
         ns.sleeve.setToGymWorkout(i, 'Powerhouse Gym', 'def');
       }
@@ -100,7 +100,7 @@ export async function main(ns: NS): Promise<void> {
         break;
       }
 
-      ns.print(`Dexterity is ${skill_value}, training until: ${combat_stats_target}`);
+      ns.print(`Dexterity is ${ns.format.number(skill_value)}, training until: ${combat_stats_target}`);
       for (let i = 0; i < ns.sleeve.getNumSleeves(); i++) {
         ns.sleeve.setToGymWorkout(i, 'Powerhouse Gym', 'dex');
       }
@@ -118,7 +118,7 @@ export async function main(ns: NS): Promise<void> {
         break;
       }
 
-      ns.print(`Agility is ${skill_value}, training until: ${combat_stats_target}`);
+      ns.print(`Agility is ${ns.format.number(skill_value)}, training until: ${combat_stats_target}`);
       for (let i = 0; i < ns.sleeve.getNumSleeves(); i++) {
         ns.sleeve.setToGymWorkout(i, 'Powerhouse Gym', 'agi');
       }
@@ -132,7 +132,7 @@ export async function main(ns: NS): Promise<void> {
     const player = ns.getPlayer();
     const skills = player['skills'];
     const hacking = skills['hacking'];
-    ns.print(`Hacking level is ${hacking}`);
+    ns.print(`Hacking level is ${ns.format.number(hacking)}`);
 
     for (let i = 0; i < ns.sleeve.getNumSleeves(); i++) {
       ns.sleeve.setToUniversityCourse(i, 'Rothman University', 'Algorithms');
