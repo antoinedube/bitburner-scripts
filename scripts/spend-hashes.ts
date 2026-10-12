@@ -49,7 +49,7 @@ export async function main(ns: NS): Promise<void> {
   */
 
   const ten_trillions = 10 * 1000 * 1000 * 1000 * 1000;  // k -> m -> g -> t
-  const hacking_level_boundary = 1500;
+  const hacking_level_boundary = 3000;
   const hacknetConstants = ns.formulas.hacknetServers.constants();
 
   try {
@@ -57,10 +57,10 @@ export async function main(ns: NS): Promise<void> {
       if (hacking_level_boundary < ns.getHackingLevel() && ns.hacknet.numNodes() == hacknetConstants['MaxServers']) {
         const r = Math.random();
 
-        if (r < 0.1) {
+        if (r < 0.05) {
           await spendHashesOnAction(ns, "Improve Gym Training", "target", 1);
           ns.print('Improved gym training');
-        } else if (r < 0.2) {
+        } else if (r < 0.1) {
           const target = selectRandomServer(ns);
           const minLevel = ns.getServerMinSecurityLevel(target);
           if (1.0 < minLevel) {
@@ -68,7 +68,7 @@ export async function main(ns: NS): Promise<void> {
             const minLevelAfter = ns.getServerMinSecurityLevel(target);
             ns.print(`Reduced minimum security level on ${target} from ${ns.format.number(minLevel)} to ${ns.format.number(minLevelAfter)}`);
           }
-        } else if (r < 0.3) {
+        } else if (r < 0.15) {
           const target = selectRandomServer(ns);
           const maxMoney = ns.getServerMaxMoney(target);
           if (maxMoney < ten_trillions) {
@@ -79,8 +79,7 @@ export async function main(ns: NS): Promise<void> {
         }
       }
 
-      // Clamp to [1, 50]
-      const sellAmount = Math.min(Math.max(1, Math.floor(ns.hacknet.numHashes() / 5.0)), 50);
+      const sellAmount = Math.max(1, Math.floor(ns.hacknet.numHashes() / 10.0));
 
       await spendHashesOnAction(ns, "Sell for Money", "target", sellAmount);
       ns.print(`Sold hashes for money (${ns.format.number(sellAmount)})`);

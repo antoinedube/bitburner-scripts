@@ -7,6 +7,7 @@ export async function main(ns: NS): Promise<void> {
     'buy-hacknet-servers.js',
     'buy-servers.js',
     'manage-factions.js',
+    'manage-sleeves.js',
     'buy-darkweb-programs.js',
   ];
 
