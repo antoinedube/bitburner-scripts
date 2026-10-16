@@ -28,17 +28,29 @@ export async function main(ns: NS): Promise<void> {
 
   await ns.sleep(1000);
 
-  const hackingScript = 'hack-remote.js';
-  const scriptRam = ns.getScriptRam(hackingScript);
-  const serverMaxRam = ns.getServerMaxRam('home');
-  const serverUsedRam = ns.getServerUsedRam('home');
-  const availableRam = serverMaxRam - serverUsedRam;
-  const scriptNumThreads = (~~(availableRam / scriptRam));
+  let theadedScripts = ['manage-stanek-gift.js', 'hack-remote.js'];
 
-  if (scriptNumThreads > 0) {
-    ns.tprint(`Launching script: ${hackingScript} with ${scriptNumThreads} threads`);
-    ns.exec(hackingScript, 'home', scriptNumThreads);
+  for (let threadedScript of theadedScripts) {
+    const scriptRam = ns.getScriptRam(threadedScript);
+    const serverMaxRam = ns.getServerMaxRam('home');
+    const serverUsedRam = ns.getServerUsedRam('home');
+    const availableRam = serverMaxRam - serverUsedRam;
+    const scriptNumThreads = (~~(availableRam / scriptRam));
+
+    if (scriptNumThreads > 0) {
+      ns.tprint(`Launching script: ${threadedScript} with ${scriptNumThreads} threads`);
+      ns.exec(threadedScript, 'home', scriptNumThreads);
+    }
+
+    if (threadedScript == 'hack-remote.js') {
+      continue;
+    }
+
+    while (ns.isRunning((threadedScript))) {
+      await ns.sleep(1000);
+    }
   }
+
 
   if (ns.singularity) {
     ns.singularity.universityCourse('Rothman University', 'Computer Science');
