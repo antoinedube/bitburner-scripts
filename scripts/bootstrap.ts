@@ -56,4 +56,3 @@ export async function main(ns: NS): Promise<void> {
     ns.singularity.universityCourse('Rothman University', 'Computer Science');
   }
 }
-

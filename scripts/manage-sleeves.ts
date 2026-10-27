@@ -56,6 +56,14 @@ export async function main(ns: NS): Promise<void> {
 
     // Strength
     while (true) {
+      while (ns.getServerMoneyAvailable("home") < 0.0) {
+        for (let i = 0; i < ns.sleeve.getNumSleeves(); i++) {
+          ns.sleeve.setToUniversityCourse(i, 'Rothman University', 'Computer Science');
+        }
+
+        await ns.sleep(1000 * 15);
+      }
+
       const player = ns.getPlayer();
       const skills = player['skills'];
 
@@ -74,6 +82,14 @@ export async function main(ns: NS): Promise<void> {
 
     // Defense
     while (true) {
+      while (ns.getServerMoneyAvailable("home") < 0.0) {
+        for (let i = 0; i < ns.sleeve.getNumSleeves(); i++) {
+          ns.sleeve.setToUniversityCourse(i, 'Rothman University', 'Computer Science');
+        }
+
+        await ns.sleep(1000 * 15);
+      }
+
       const player = ns.getPlayer();
       const skills = player['skills'];
 
@@ -92,6 +108,14 @@ export async function main(ns: NS): Promise<void> {
 
     // Dexterity
     while (true) {
+      while (ns.getServerMoneyAvailable("home") < 0.0) {
+        for (let i = 0; i < ns.sleeve.getNumSleeves(); i++) {
+          ns.sleeve.setToUniversityCourse(i, 'Rothman University', 'Computer Science');
+        }
+
+        await ns.sleep(1000 * 15);
+      }
+
       const player = ns.getPlayer();
       const skills = player['skills'];
 
@@ -110,6 +134,14 @@ export async function main(ns: NS): Promise<void> {
 
     // Agility
     while (true) {
+      while (ns.getServerMoneyAvailable("home") < 0.0) {
+        for (let i = 0; i < ns.sleeve.getNumSleeves(); i++) {
+          ns.sleeve.setToUniversityCourse(i, 'Rothman University', 'Computer Science');
+        }
+
+        await ns.sleep(1000 * 15);
+      }
+
       const player = ns.getPlayer();
       const skills = player['skills'];
 
